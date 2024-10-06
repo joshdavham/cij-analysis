@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import altair as alt
 
+#st.set_page_config(layout="wide")
+
 st.markdown("""
 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -99,6 +101,7 @@ histogram = alt.Chart(video_df).mark_bar(
     #width=750,
     #width='container',
     #height='container',
+    height=500,
     #background='beige',
     #padding=50,
     title=alt.TitleParams(
