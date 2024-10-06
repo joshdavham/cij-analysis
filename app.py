@@ -4,14 +4,15 @@ import altair as alt
 
 #st.set_page_config(layout="wide")
 
-st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700&display=swap" rel="stylesheet">
-<style>
-    .vega-embed * {
-        font-family: 'Urbanist', sans-serif;
-    }
-</style>
-""", unsafe_allow_html=True)
+
+#st.markdown("""
+#<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700&display=swap" rel="stylesheet">
+#<style>
+#    .vega-embed * {
+#        font-family: 'Urbanist', sans-serif;
+#    }
+#</style>
+#""", unsafe_allow_html=True)
 
 st.title("CIJ by the numbers")
 
@@ -48,7 +49,7 @@ histogram = alt.Chart(video_df).mark_bar(
         axis=alt.Axis(
             labelFontSize=14, 
             titleFontSize=18,
-            titleFont='Urbanist',
+            #titleFont='Urbanist',
             titleColor='black',
             titleFontWeight='normal',
             #titleFontStyle='italic',
@@ -61,7 +62,7 @@ histogram = alt.Chart(video_df).mark_bar(
         axis=alt.Axis(
             labelFontSize=14, 
             titleFontSize=18,
-            titleFont='Urbanist',
+            #titleFont='Urbanist',
             titleColor='black',
             titleFontWeight='normal',
             #titleFontStyle='italic',
@@ -76,11 +77,11 @@ histogram = alt.Chart(video_df).mark_bar(
         sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         legend=alt.Legend(
             title='CIJ Level',
-            titleFont='Urbanist',
+            #titleFont='Urbanist',
             titleFontSize=18,
             titleFontWeight='bolder',
             labelFontSize=16,
-            labelFont='Urbanist',
+            #labelFont='Urbanist',
             symbolType='circle',
             symbolSize=200,
             orient='right',
@@ -108,7 +109,7 @@ histogram = alt.Chart(video_df).mark_bar(
         text='Rate of speech in words per minute (WPM)',
         offset=20,
         #subtitle='(clickable)',
-        font='Urbanist',
+        #font='Urbanist',
         fontSize=24,
         fontWeight='normal',
         anchor='middle',
