@@ -84,6 +84,7 @@ histogram = alt.Chart(video_df).mark_bar(
             #labelFont='Urbanist',
             symbolType='circle',
             symbolSize=200,
+            symbolStrokeWidth=0,
             orient='right',
             direction='vertical',
             fillColor='white',
@@ -148,9 +149,9 @@ vertical_lines = alt.Chart(line_data).mark_rule(
 )
 
 text_labels = alt.Chart(line_data).mark_text(
-    align='left',  # Align text to the left of the line
-    dx=5,  # Offset the text to the right by 5 pixels
-    dy=-5, # Adjust vertical positioning
+    align='center',  # Align text to the left of the line
+    dx=0,  # Offset the text to the right by 5 pixels
+    dy=-10, # Adjust vertical positioning
     fontSize=16,
     fontWeight='bold'
 ).encode(
