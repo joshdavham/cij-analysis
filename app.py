@@ -8,7 +8,7 @@ st.title("CIJ by the numbers")
 st.markdown("[Comprehensible Japanese (CIJ)](https://cijapanese.com/) is a \
             video platform for learning Japanese.")
 
-df = pd.read_csv("stats.tsv", sep="\t")
+df = pd.read_csv("video_data.tsv", sep="\t")
 
 # Plot the WPM histogram
 levels = list(df['level'].unique())
