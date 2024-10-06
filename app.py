@@ -161,7 +161,10 @@ text_labels = alt.Chart(line_data).mark_text(
     )
 )
 
-#layered_chart = alt.layer(histogram, background='#f6f8fb')
-layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='#f6f8fb')
+
+if st.checkbox('Show medians'):
+    layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='#f6f8fb')
+else:
+    layered_chart = alt.layer(histogram, background='#f6f8fb')
 
 st.altair_chart(layered_chart, use_container_width=True)
