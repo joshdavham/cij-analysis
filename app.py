@@ -127,7 +127,7 @@ histogram = alt.Chart(video_df).mark_bar(
 vertical_lines = alt.Chart(line_data).mark_rule(
     color='red',
     strokeWidth=6,
-    strokeDash = [5, 4], # first arg is length, second is gap
+    strokeDash = [10, 2], # first arg is length, second is gap
 ).encode(
     x='x:Q',
     tooltip=[
@@ -163,7 +163,8 @@ text_labels = alt.Chart(line_data).mark_text(
         scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
         sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         legend=None
-    )
+    ),
+    opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
 )
 
 
