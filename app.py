@@ -175,6 +175,108 @@ else:
 
 st.altair_chart(layered_chart, use_container_width=True)
 
+# wpm vs sps chart
+
+def get_wpm_vs_sps_chart(interactive=False):
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    # Create the scatter plot
+    scatter_plot = alt.Chart(video_df).mark_circle(
+        cursor='pointer',
+        size=80,
+    ).encode(
+        x=alt.X(
+            'wpm:Q',
+            scale=alt.Scale(domain=[30,215]),
+            title='Words per minute',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20
+            )
+        ),
+        y=alt.Y(
+            'sps:Q',
+            title='Syllables per second',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                #tickCount=5
+            ),
+        ),
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                symbolType='circle',
+                symbolSize=200,
+                #symbolStrokeWidth=3,
+                orient='right',
+                direction='vertical',
+                #fillColor='black',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('video:N', title='Video number:'),
+            alt.Tooltip('level:N', title='Level:'),
+            alt.Tooltip('wpm:Q', title='WPM:'),
+            alt.Tooltip('sps:Q', title='SPS:'),
+
+        ],
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.2)),
+        #strokeWidth=alt.condition(selection | highlight, alt.value(6), alt.value(2))
+    ).properties(
+        width='container',
+        height=500,
+        title=alt.TitleParams(
+            text='Rate of speech: Syllables per second vs. words per minute',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Display the plot
+    if interactive:
+        return scatter_plot.interactive()
+    else:
+        return scatter_plot
+    
+if st.checkbox('Enable zooming and panning ( ↕ / ↔️ )'):
+    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=True)
+else:
+    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=False)
+
+st.altair_chart(wpm_vs_sps_chart, use_container_width=True)
+
 # word coverage chart
 
 def get_word_coverage_chart():
