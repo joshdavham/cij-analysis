@@ -603,11 +603,24 @@ row_labels = ['Median Perc. Subordinating Conjunctions', 'Median Perc. Adverbs',
 df.index = row_labels
 
 # Apply header-specific styling using set_table_styles
-styled_df = df.style.set_table_styles({
-    'Complete Beginner': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]}],
-    'Beginner': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]}],
-    'Intermediate': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]}],
-    'Advanced': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]}],
+styled_df = df.style.set_table_styles(
+    {
+        'Complete Beginner': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Beginner': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Intermediate': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Advanced': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
 }).format("{:.2%}")
 
 # Display the styled DataFrame
@@ -627,11 +640,24 @@ row_labels = ['Median Perc. Kango (漢語)', 'Median Perc. Wago (和語)', 'Medi
 df.index = row_labels
 
 # Apply header-specific styling using set_table_styles
-styled_df = df.style.set_table_styles({
-    'Complete Beginner': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]}],
-    'Beginner': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]}],
-    'Intermediate': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]}],
-    'Advanced': [{'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]}],
+styled_df = df.style.set_table_styles(
+    {
+        'Complete Beginner': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Beginner': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Intermediate': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
+        'Advanced': [
+            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
+            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+        ],
 }).format("{:.2%}")
 
 # Display the styled DataFrame
