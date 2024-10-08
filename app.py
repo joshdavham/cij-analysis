@@ -174,3 +174,316 @@ else:
     layered_chart = alt.layer(histogram, background='#f6f8fb')
 
 st.altair_chart(layered_chart, use_container_width=True)
+
+# word coverage chart
+
+def get_word_coverage_chart():
+
+    word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
+
+    # Data for vertical lines corresponding to each level
+    line_data = pd.DataFrame({
+        'x': [4295, 5606, 6853, 9085],
+        'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+        'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
+    })
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    line_chart = alt.Chart(word_coverage_df).mark_line(
+        cursor='pointer',
+        point=False,
+    ).encode(
+        x=alt.X(
+            'rank:Q', 
+            scale=alt.Scale(domain=[-10,16000]),
+            #scale=alt.Scale(domain=[1000,16000]),
+            title='Number of words known',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20
+            )
+        ),
+        y=alt.Y(
+            'coverage_perc:Q', 
+            scale=alt.Scale(domain=[0,105]), 
+            #scale=alt.Scale(domain=[90,101]),
+            title='% of words understood',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                tickCount=5
+            ),
+        ),
+        #x=alt.X('rank:Q', scale=alt.Scale(domain=[1000,16000])),
+        #y=alt.Y('coverage_perc:Q', scale=alt.Scale(domain=[90,101])),
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                symbolType='circle',
+                symbolSize=200,
+                #symbolStrokeWidth=3,
+                orient='right',
+                direction='vertical',
+                #fillColor='black',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('word:N', title='Word: '),
+            alt.Tooltip('rank:Q', title="CIJ rank: "),
+            alt.Tooltip('coverage_perc_str:N', title='Word coverage: '),
+            alt.Tooltip('level:N', title='Level: ')
+        ],
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.2)),
+        strokeWidth=alt.condition(selection | highlight, alt.value(6), alt.value(2))
+    ).properties(
+        width='container',
+        height=500,
+        title=alt.TitleParams(
+            text='Word coverage curves',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Vertical lines corresponding to each level
+    vertical_lines = alt.Chart(line_data).mark_rule(
+        color='red',
+        strokeWidth=4,
+        strokeDash = [10, 2], # first arg is length, second is gap
+    ).encode(
+        x='x:Q',
+        tooltip=[
+            alt.Tooltip('x:N', title='Words needed to reach 98%:'),
+            alt.Tooltip('level:N', title='Level:')
+        ],
+        #color=alt.condition(select, 'level:N', alt.value('gray')),  # Link the color with the selection
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'yellow']),  # Use the same color scale as the histogram
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None  # No legend for lines, it is already shown in the histogram
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+        strokeWidth=alt.condition(highlight, alt.value(20), alt.value(1))
+    ).add_params(
+        selection,
+        highlight
+    )#.interactive()
+
+    text_labels = alt.Chart(line_data).mark_text(
+        align='center',  # Align text to the left of the line
+        dx=0,  # Offset the text to the right by 5 pixels
+        dy=-10, # Adjust vertical positioning
+        fontSize=16,
+        fontWeight='bold'
+    ).encode(
+        x='x:Q',
+        y=alt.value(0),  # Positioning y at the top of the chart, can be adjusted as needed
+        text=alt.Text('x:Q', format='.0f'),  # Display the x value, formatted as an integer
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+    )
+
+    #layered_chart = alt.layer(line_chart, background='#f6f8fb')
+    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='#f6f8fb')
+
+    return layered_chart
+
+
+def get_zoomed_word_coverage_chart():
+
+    word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
+
+    word_coverage_df_sub = word_coverage_df.loc[word_coverage_df['coverage_perc']>=90]
+
+    # Data for vertical lines corresponding to each level
+    line_data = pd.DataFrame({
+        'x': [4295, 5606, 6853, 9085],
+        'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+        'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
+    })
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    line_chart = alt.Chart(word_coverage_df_sub).mark_line(
+        cursor='pointer',
+        point=False,
+        strokeWidth=6
+    ).encode(
+        x=alt.X(
+            'rank:Q', 
+            #scale=alt.Scale(domain=[-10,16000]),
+            scale=alt.Scale(domain=[1000,16000]),
+            title='Number of words known',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20
+            )
+        ),
+        y=alt.Y(
+            'coverage_perc:Q', 
+            #scale=alt.Scale(domain=[0,105]), 
+            scale=alt.Scale(domain=[90,101]),
+            title='% of words understood',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                tickCount=5
+            ),
+        ),
+        #x=alt.X('rank:Q', scale=alt.Scale(domain=[1000,16000])),
+        #y=alt.Y('coverage_perc:Q', scale=alt.Scale(domain=[90,101])),
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                symbolType='circle',
+                symbolSize=200,
+                #symbolStrokeWidth=3,
+                orient='right',
+                direction='vertical',
+                #fillColor='black',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('word:N', title='Word: '),
+            alt.Tooltip('rank:Q', title="CIJ rank: "),
+            alt.Tooltip('coverage_perc_str:N', title='Word coverage: '),
+            alt.Tooltip('level:N', title='Level: ')
+        ],
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.2)),
+        #strokeWidth=alt.condition(selection | highlight, alt.value(6), alt.value(2))
+    ).properties(
+        width='container',
+        height=500,
+        title=alt.TitleParams(
+            text='Word coverage curves',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Vertical lines corresponding to each level
+    vertical_lines = alt.Chart(line_data).mark_rule(
+        color='red',
+        strokeWidth=4,
+        strokeDash = [10, 2], # first arg is length, second is gap
+    ).encode(
+        x='x:Q',
+        tooltip=[
+            alt.Tooltip('x:N', title='Words needed to reach 98%:'),
+            alt.Tooltip('level:N', title='Level:')
+        ],
+        #color=alt.condition(select, 'level:N', alt.value('gray')),  # Link the color with the selection
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'yellow']),  # Use the same color scale as the histogram
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None  # No legend for lines, it is already shown in the histogram
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+        #strokeWidth=alt.condition(highlight, alt.value(20), alt.value(1))
+    ).add_params(
+        selection,
+        highlight
+    )#.interactive()
+
+    text_labels = alt.Chart(line_data).mark_text(
+        align='center',  # Align text to the left of the line
+        dx=0,  # Offset the text to the right by 5 pixels
+        dy=-10, # Adjust vertical positioning
+        fontSize=16,
+        fontWeight='bold'
+    ).encode(
+        x='x:Q',
+        y=alt.value(0),  # Positioning y at the top of the chart, can be adjusted as needed
+        text=alt.Text('x:Q', format='.0f'),  # Display the x value, formatted as an integer
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+    )
+
+    #layered_chart = alt.layer(line_chart, background='#f6f8fb')
+    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='#f6f8fb')
+
+    return layered_chart
+
+
+if st.checkbox('Zoom in'):
+
+    word_coverage_chart = get_zoomed_word_coverage_chart()
+
+else:
+
+    word_coverage_chart = get_word_coverage_chart()
+
+st.altair_chart(word_coverage_chart, use_container_width=True)
