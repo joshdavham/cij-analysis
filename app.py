@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import altair as alt
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 #st.set_page_config(layout="wide")
 
@@ -662,3 +664,92 @@ styled_df = df.style.set_table_styles(
 
 # Display the styled DataFrame
 st.markdown(styled_df.to_html(), unsafe_allow_html=True)
+
+# heatmap
+
+num_video_df = pd.read_csv('num_video_df.tsv', sep='\t')
+
+def render_vanilla_heatmap():
+
+    # Compute the correlation matrix
+    corr_matrix = num_video_df.corr()
+
+    # Specify the variable of interest (e.g., 'target_variable')
+    variable_of_interest = 'Level'
+
+    # Sort the variables based on correlation with the variable of interest
+    sorted_vars = corr_matrix[variable_of_interest].sort_values(ascending=False).index
+
+    # Reorder the correlation matrix
+    sorted_corr_matrix = corr_matrix.loc[sorted_vars, sorted_vars]
+
+    # Create a heatmap using seaborn with the sorted correlation matrix
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(sorted_corr_matrix, annot=True, cmap='coolwarm', fmt=".3f")
+
+    # Display the heatmap
+    #plt.show()
+    st.pyplot(plt.gcf())
+
+render_vanilla_heatmap()
+
+def render_level_row_unordered():
+
+    # Compute the correlation matrix
+    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
+
+    # Specify the variable of interest (e.g., 'Level')
+    variable_of_interest = 'Level'
+
+    # Sort the variables based on correlation with the variable of interest
+    sorted_vars = corr_matrix[variable_of_interest].sort_values(ascending=False).index
+
+    # Remove 'Level' from the sorted variables to exclude the self-correlation
+    sorted_vars = sorted_vars.drop(variable_of_interest)
+
+    # Reorder the correlation matrix and exclude 'Level' column from the first row
+    first_row_matrix = corr_matrix.loc[[variable_of_interest], sorted_vars]
+
+    # Create a heatmap using seaborn with the single row of the correlation matrix
+    plt.figure(figsize=(10, 1))  # Adjust the figure size to make it more appropriate for a single row
+    sns.heatmap(first_row_matrix, annot=True, cmap='coolwarm', fmt=".3f", cbar_kws={'label': 'Correlation'})
+
+    # Display the heatmap
+    #plt.show()
+    st.pyplot(plt.gcf())
+
+def render_level_col_ordered():
+
+    # Compute the correlation matrix
+    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
+
+    # Specify the variable of interest (e.g., 'Level')
+    variable_of_interest = 'Level'
+
+    # Get the correlations of the variable of interest
+    correlations = corr_matrix[variable_of_interest]
+
+    # Sort the variables based on the absolute value of the correlation with the variable of interest
+    sorted_vars = correlations.abs().sort_values(ascending=False).index
+
+    # Remove 'Level' from the sorted variables (to exclude the self-correlation)
+    sorted_vars = sorted_vars.drop(variable_of_interest)
+
+    # Reorder the correlation matrix, excluding the self-correlation
+    sorted_corr_matrix = corr_matrix.loc[[variable_of_interest], sorted_vars]
+
+    # Transpose the matrix to make it vertical
+    transposed_corr_matrix = sorted_corr_matrix.T
+
+    # Create a heatmap using seaborn with the transposed correlation matrix
+    plt.figure(figsize=(2, 3))  # Adjust the figure size to make it more appropriate for a vertical layout
+    sns.heatmap(transposed_corr_matrix, annot=True, cmap='coolwarm', fmt=".3f", cbar_kws={'label': 'Correlation'})
+
+    # Display the heatmap
+    #plt.show()
+    st.pyplot(plt.gcf())
+
+if st.checkbox('Flip and sort'):
+    render_level_col_ordered()
+else:
+    render_level_row_unordered()
