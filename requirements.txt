@@ -35,6 +35,7 @@ referencing==0.35.1
 requests==2.32.3
 rich==13.8.1
 rpds-py==0.20.0
+seaborn==0.13.2
 six==1.16.0
 smmap==5.0.1
 streamlit==1.38.0
@@ -44,3 +45,4 @@ tornado==6.4.1
 typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.3
+watchdog==5.0.3
