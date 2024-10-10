@@ -942,14 +942,14 @@ st.markdown("8. Amount of Chinese words")
 
 st.markdown("### Thanks for reading ✌️")
 
-st.markdown("---")
+#st.markdown("---")
 
-st.markdown("In the unlikely chance that you happen to be a CI instructor or a CI content creator, I want to talk to you! \
-            I can be reached at hamiltonjoshuadavid@gmail.com and I'm interested in learning \
-            more about what you do. Please also add a link to your work if you decide to reach out.")
+#st.markdown("In the unlikely chance that you happen to be a CI instructor or a CI content creator, I want to talk to you! \
+#            I can be reached at hamiltonjoshuadavid@gmail.com and I'm interested in learning \
+#            more about what you do. Please also add a link to your work if you decide to reach out.")
 
-st.markdown("Special thanks to [CIJ](https://cijapanese.com/). I'm a happy subscriber and I recommend you also pick up a \
-             a membership if you're a Japanese learner!")
+#st.markdown("Special thanks to [CIJ](https://cijapanese.com/). I'm a happy subscriber and I recommend you also pick up a \
+#             a membership if you're a Japanese learner!")
 
 #st.markdown("---")
 #st.markdown("**Some extra notes:**")
