@@ -192,9 +192,9 @@ def get_wpm_chart(show_medians=False):
 
 
     if show_medians:
-        layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='#f6f8fb')
+        layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='white')
     else:
-        layered_chart = alt.layer(histogram, background='#f6f8fb')
+        layered_chart = alt.layer(histogram, background='white')
 
     return layered_chart
 
@@ -300,6 +300,8 @@ def get_wpm_vs_sps_chart(interactive=False):
     ).add_params(
         selection,
         highlight
+    ).configure(
+        background='white'
     )
 
     # Display the plot
@@ -529,7 +531,7 @@ def get_word_coverage_chart():
     )
 
     #layered_chart = alt.layer(line_chart, background='#f6f8fb')
-    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='#f6f8fb')
+    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='white')
 
     return layered_chart
 
@@ -681,7 +683,7 @@ def get_zoomed_word_coverage_chart():
     )
 
     #layered_chart = alt.layer(line_chart, background='#f6f8fb')
-    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='#f6f8fb')
+    layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='white')
 
     return layered_chart
 
@@ -764,10 +766,27 @@ styled_df = df.style.set_table_styles(
             {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
             {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
         ],
-}).format("{:.2%}")
+        # This is where we target the top-left index column reader
+        '': [
+            {'selector': '.index_name', 'props': [('color', 'green'), ('font-weight', 'bold')]}
+        ]
+}).set_properties(**{'background-color': 'white'}).format("{:.2%}")
+
+# Inject CSS to ensure the background is white in the markdown section
+st.markdown(
+    """
+    <style>
+    .dataframe-divv {
+        background-color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
 
 # Display the styled DataFrame
-st.markdown(styled_df.to_html(), unsafe_allow_html=True)
+st.markdown(
+    '<div class="dataframe-divv">' + styled_df.to_html() + "</div>"
+    , unsafe_allow_html=True)
 
 st.markdown("## What type of word")
 
@@ -816,10 +835,12 @@ styled_df = df.style.set_table_styles(
             {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
             {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
         ],
-}).format("{:.2%}")
+}).set_properties(**{'background-color': 'white'}).format("{:.2%}")
 
 # Display the styled DataFrame
-st.markdown(styled_df.to_html(), unsafe_allow_html=True)
+st.markdown(
+    '<div class="dataframe-divv">' + styled_df.to_html() + "</div>"
+    , unsafe_allow_html=True)
 
 # heatmap
 
