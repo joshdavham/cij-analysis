@@ -966,7 +966,9 @@ st.markdown("8. Amount of Chinese words")
 
 st.markdown("### Thanks for reading ✌️")
 
-#st.markdown("---")
+st.markdown("---")
+
+st.markdown("You can find the code for this analysis [here](https://github.com/joshdavham/cij-analysis)")
 
 #st.markdown("In the unlikely chance that you happen to be a CI instructor or a CI content creator, I want to talk to you! \
 #            I can be reached at hamiltonjoshuadavid@gmail.com and I'm interested in learning \
