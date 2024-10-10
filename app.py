@@ -4,7 +4,10 @@ import altair as alt
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-#st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title='What makes comprehensible input comprehensible?',
+    page_icon='favicon.svg'
+)
 
 
 #st.markdown("""
