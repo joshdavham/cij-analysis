@@ -533,15 +533,200 @@ st.altair_chart(sentence_length_hist, use_container_width=True)
 st.markdown("This makes sense because long sentences generally tend to be more complex and packed with information \
             whereas short sentences are usually easier to understand.")
 
+###
+# AMOUNT OF REPETITION
+###
 st.markdown("## Amount of repetition")
 
 st.markdown("Words are repeated more often in easier videos.")
 
-st.markdown("[TODO]: Add Average rel reps histogram")
+def get_repetition_hist(show_medians=False):
+
+    video_df['average_rel_reps_perc'] = 100.0 * video_df['average_rel_reps']
+
+    #if show_medians:
+    #    sub_video_df = video_df[video_df['average_rel_reps_perc'] <= 2.0]
+    #else:
+    #    sub_video_df = video_df
+    # take the sub data frame for easier viewing
+    sub_video_df = video_df[video_df['average_rel_reps_perc'] <= 2.0]
+
+    # Data for vertical lines corresponding to each level
+    line_data = pd.DataFrame({
+        'x': [0.99, 0.62, 0.37, 0.23],
+        'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+        'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
+    })
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    histogram = alt.Chart(sub_video_df).mark_bar(
+        opacity=0.5,
+        binSpacing=3,
+        stroke='black',
+        strokeWidth=0,
+        cornerRadius=5,
+        cursor="pointer"
+    ).encode(
+        alt.X(
+            'average_rel_reps_perc:Q',
+            bin=alt.Bin(maxbins=30),
+            title='Average relative repetitions (%)',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                #format='.1f%'
+            ),
+        ),
+        alt.Y(
+            'count()', 
+            title="Num. videos",
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                tickCount=5
+            ),
+            scale=alt.Scale(domain=[0,100])
+        ).stack(None),
+        alt.Color(
+            'level:N', 
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                #titleFont='Urbanist',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                #labelFont='Urbanist',
+                symbolType='circle',
+                symbolSize=200,
+                symbolStrokeWidth=0,
+                orient='right',
+                direction='vertical',
+                fillColor='white',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('average_rel_reps:Q', title='Average relative repetitions:', bin=True),  # Properly indicate that `wpm` is binned
+            alt.Tooltip('level:N', title='Level:'),
+            alt.Tooltip('count()', title='Video count:')
+        ],
+        opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
+        strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
+    ).properties(
+        #width=750,
+        width='container',
+        #height='container',
+        height=500,
+        #background='beige',
+        #padding=50,
+        title=alt.TitleParams(
+            text='Relative repetitions of words',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Vertical lines corresponding to each level
+    vertical_lines = alt.Chart(line_data).mark_rule(
+        color='red',
+        strokeWidth=6,
+        strokeDash = [10, 2], # first arg is length, second is gap
+    ).encode(
+        alt.X(
+            'x:Q'
+        ),
+        tooltip=[
+            alt.Tooltip('x:N', title='Median average relative repetitions:'),
+            alt.Tooltip('level:N', title='Level:')
+        ],
+        #color=alt.condition(select, 'level:N', alt.value('gray')),  # Link the color with the selection
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'yellow']),  # Use the same color scale as the histogram
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None  # No legend for lines, it is already shown in the histogram
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+        strokeWidth=alt.condition(highlight, alt.value(20), alt.value(1)),
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    text_labels = alt.Chart(line_data).mark_text(
+        align='center',  # Align text to the left of the line
+        dx=0,  # Offset the text to the right by 5 pixels
+        dy=-10, # Adjust vertical positioning
+        fontSize=16,
+        fontWeight='bold'
+    ).encode(
+        alt.X(
+            'x:Q'
+        ),
+        y=alt.value(0),  # Positioning y at the top of the chart, can be adjusted as needed
+        text=alt.Text('x:Q', format='.2f'),  # Display the x value, formatted as an integer
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+    )
+
+    if show_medians:
+
+        layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='white')
+
+    else:
+
+        layered_chart = alt.layer(histogram, background='white')
+
+    return layered_chart
+
+if st.checkbox('Show medians', key='repetition'):
+
+    repetition_hist = get_repetition_hist(show_medians=True)
+
+else:
+    
+    repetition_hist = get_repetition_hist(show_medians=False)
+
+st.altair_chart(repetition_hist, use_container_width=True)
+
 
 st.markdown("If you don't catch a word the first time it's said, there's more opportunities \
             in the easier videos to hear that word again.")
 
+###
+# HOW MANY WORDS
+###
 st.markdown("## How many words you need to know")
 
 st.markdown("A popular statistic in language learning circles is that you generally \
@@ -872,7 +1057,170 @@ st.markdown("Using the same method of calculating word coverage as before, \
             we can also calculate how many of the top words you need to know \
             to achieve 98% word coverage in each video.")
 
-st.markdown("[TODO]: Add ne_spot histogram")
+def get_ne_spot_hist(show_medians=False):
+
+    # Data for vertical lines corresponding to each level
+    line_data = pd.DataFrame({
+        'x': [3859, 5229, 6698, 7925],
+        'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+        'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
+    })
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    histogram = alt.Chart(video_df).mark_bar(
+        opacity=0.5,
+        binSpacing=3,
+        stroke='black',
+        strokeWidth=0,
+        cornerRadius=5,
+        cursor="pointer"
+    ).encode(
+        alt.X(
+            'ne_spot:Q',
+            bin=alt.Bin(maxbins=30),
+            title='Number of most common CIJ words known',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                #format='.1f%'
+            )
+        ),
+        alt.Y(
+            'count()', 
+            title="Num. videos",
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                tickCount=5
+            ),
+            scale=alt.Scale(domain=[0,40])
+        ).stack(None),
+        alt.Color(
+            'level:N', 
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                #titleFont='Urbanist',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                #labelFont='Urbanist',
+                symbolType='circle',
+                symbolSize=200,
+                symbolStrokeWidth=0,
+                orient='right',
+                direction='vertical',
+                fillColor='white',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('ne_spot:Q', title='Vocab size needed for 98% cov:', bin=True),  # Properly indicate that `wpm` is binned
+            alt.Tooltip('level:N', title='Level:'),
+            alt.Tooltip('count()', title='Video count:')
+        ],
+        opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
+        strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
+    ).properties(
+        #width=750,
+        width='container',
+        #height='container',
+        height=500,
+        #background='beige',
+        #padding=50,
+        title=alt.TitleParams(
+            text='Vocab size needed for 98% coverage',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Vertical lines corresponding to each level
+    vertical_lines = alt.Chart(line_data).mark_rule(
+        color='red',
+        strokeWidth=6,
+        strokeDash = [10, 2], # first arg is length, second is gap
+    ).encode(
+        x='x:Q',
+        tooltip=[
+            alt.Tooltip('x:N', title='Median vocab size needed for 98% cov:'),
+            alt.Tooltip('level:N', title='Level:')
+        ],
+        #color=alt.condition(select, 'level:N', alt.value('gray')),  # Link the color with the selection
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'yellow']),  # Use the same color scale as the histogram
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None  # No legend for lines, it is already shown in the histogram
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+        strokeWidth=alt.condition(highlight, alt.value(20), alt.value(1))
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    text_labels = alt.Chart(line_data).mark_text(
+        align='center',  # Align text to the left of the line
+        dx=0,  # Offset the text to the right by 5 pixels
+        dy=-10, # Adjust vertical positioning
+        fontSize=16,
+        fontWeight='bold'
+    ).encode(
+        x='x:Q',
+        y=alt.value(0),  # Positioning y at the top of the chart, can be adjusted as needed
+        text=alt.Text('x:Q', format='.0f'),  # Display the x value, formatted as an integer
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+    )
+
+    
+    if show_medians:
+        layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='white')
+    else:
+        layered_chart = alt.layer(histogram, background='white')
+
+    return layered_chart
+
+if st.checkbox('Show medians', key='ne_spot'):
+
+    ne_spot_hist = get_ne_spot_hist(show_medians=True)
+
+else:
+    
+    ne_spot_hist = get_ne_spot_hist(show_medians=False)
+
+st.altair_chart(ne_spot_hist, use_container_width=True)
 
 st.markdown("In general, easier videos require smaller vocabulary sizes to understand.")
 
