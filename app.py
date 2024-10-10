@@ -1224,11 +1224,177 @@ st.altair_chart(ne_spot_hist, use_container_width=True)
 
 st.markdown("In general, easier videos require smaller vocabulary sizes to understand.")
 
+###
+# WORD RARENESS
+###
 st.markdown("## Word rareness")
 
 st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
 
-st.markdown("[TODO]: Add that that log rank histogram")
+def get_tfplr_hist(show_medians=False):
+
+    # Data for vertical lines corresponding to each level
+    line_data = pd.DataFrame({
+        'x': [3.82, 4.30, 4.76, 5.21],
+        'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+        'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
+    })
+
+    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+
+    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
+
+    histogram = alt.Chart(video_df).mark_bar(
+        opacity=0.5,
+        binSpacing=3,
+        stroke='black',
+        strokeWidth=0,
+        cornerRadius=5,
+        cursor="pointer"
+    ).encode(
+        alt.X(
+            'tfp_log_ranks_unique:Q',
+            bin=alt.Bin(maxbins=30),
+            title='Log ranks',
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=30,
+                #format='.1f%'
+            )
+        ),
+        alt.Y(
+            'count()', 
+            title="Num. videos",
+            axis=alt.Axis(
+                labelFontSize=14, 
+                titleFontSize=18,
+                #titleFont='Urbanist',
+                titleColor='black',
+                titleFontWeight='normal',
+                #titleFontStyle='italic',
+                titlePadding=20,
+                tickCount=5
+            ),
+            scale=alt.Scale(domain=[0,80])
+        ).stack(None),
+        alt.Color(
+            'level:N', 
+            scale=alt.Scale(range=['#a5bee4', '#9ad6d8', '#c7aecd', '#dd9e9e']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=alt.Legend(
+                title='CIJ Level',
+                #titleFont='Urbanist',
+                titleFontSize=18,
+                titleFontWeight='bolder',
+                labelFontSize=16,
+                #labelFont='Urbanist',
+                symbolType='circle',
+                symbolSize=200,
+                symbolStrokeWidth=0,
+                orient='right',
+                direction='vertical',
+                fillColor='white',
+                padding=10,
+                cornerRadius=5,
+            )
+        ),
+        tooltip=[
+            alt.Tooltip('tfp_log_ranks_unique:Q', title='25th percentile word-frequency log rank:', bin=True),  # Properly indicate that `wpm` is binned
+            alt.Tooltip('level:N', title='Level:'),
+            alt.Tooltip('count()', title='Video count:')
+        ],
+        opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
+        strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
+    ).properties(
+        #width=750,
+        width='container',
+        #height='container',
+        height=500,
+        #background='beige',
+        #padding=50,
+        title=alt.TitleParams(
+            text='25th percentile word-frequency log ranks',
+            offset=20,
+            #subtitle='(clickable)',
+            #font='Urbanist',
+            fontSize=24,
+            fontWeight='normal',
+            anchor='middle',
+            color='black',
+            subtitleFontSize=15,
+            subtitleColor='gray'
+        )
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    # Vertical lines corresponding to each level
+    vertical_lines = alt.Chart(line_data).mark_rule(
+        color='red',
+        strokeWidth=6,
+        strokeDash = [10, 2], # first arg is length, second is gap
+    ).encode(
+        x='x:Q',
+        tooltip=[
+            alt.Tooltip('x:N', title='Median 25th percentile word-frequency log rank:'),
+            alt.Tooltip('level:N', title='Level:')
+        ],
+        #color=alt.condition(select, 'level:N', alt.value('gray')),  # Link the color with the selection
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'yellow']),  # Use the same color scale as the histogram
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None  # No legend for lines, it is already shown in the histogram
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+        strokeWidth=alt.condition(highlight, alt.value(20), alt.value(1))
+    ).add_params(
+        selection,
+        highlight
+    )
+
+    text_labels = alt.Chart(line_data).mark_text(
+        align='center',  # Align text to the left of the line
+        dx=0,  # Offset the text to the right by 5 pixels
+        dy=-10, # Adjust vertical positioning
+        fontSize=16,
+        fontWeight='bold'
+    ).encode(
+        x='x:Q',
+        y=alt.value(0),  # Positioning y at the top of the chart, can be adjusted as needed
+        text=alt.Text('x:Q', format='.2f'),  # Display the x value, formatted as an integer
+        color=alt.Color(
+            'level:N',
+            scale=alt.Scale(range=['red', 'green', 'blue', 'orange']),
+            sort=['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
+            legend=None
+        ),
+        opacity=alt.condition(selection, alt.value(1.0), alt.value(0.1)),  # Link opacity with selection
+    )
+
+    #layered_chart = alt.layer(histogram, background='white')
+    if show_medians:
+        layered_chart = alt.layer(histogram, vertical_lines, text_labels, background='white')
+    else:
+        layered_chart = alt.layer(histogram, background='white')
+
+    return layered_chart
+
+if st.checkbox('Show medians', key='tfplr'):
+
+    tfplr_hist = get_tfplr_hist(show_medians=True)
+
+else:
+    
+    tfplr_hist = get_tfplr_hist(show_medians=False)
+
+st.altair_chart(tfplr_hist, use_container_width=True)
 
 st.markdown("How common a word is, is known as its 'rank'. The most common word \
             in a text would be rank 1 and the fifth most common would be rank 5. \
