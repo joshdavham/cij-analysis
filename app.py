@@ -20,6 +20,7 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
+# functions for loading data
 @st.cache_data
 def load_dataframes():
 
@@ -99,38 +100,7 @@ def get_word_origin_table():
 
     return styled_df
 
-
-video_df, word_coverage_df, num_video_df = load_dataframes()
-grammar_table = get_grammar_table()
-word_origin_table = get_word_origin_table()
-
-st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
-
-st.markdown("[Code can be found [here](https://github.com/joshdavham/cij-analysis)]")
-
-st.markdown("# What makes comprehensible input *comprehensible*?")
-
-st.markdown("**Comprehensible input** (or CI, for short) is a language teaching technique where teachers \
-            speak in a way that is understandable to their students. \
-            It is believed by many that CI is one of the most optimal and natural \
-             ways to acquire a foreign language \
-            ...but, what exactly is about CI that makes it comprehensible?")
-
-
-
-st.markdown("To answer this question, I'll be analyzing the videos on \
-            [cijapanese.com](https://cijapanese.com/) (CIJ), a \
-            video platform for learning Japanese.")
-
-###
-# RATE OF SPEECH
-###
-st.markdown("## How fast is CI?")
-
-st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
-            they speak more slowly in videos meant for beginners and more quickly \
-            for advanced learners.")
-
+# functions for loading data visualizations
 @st.cache_data
 def get_wpm_chart(show_medians=False):
 
@@ -270,21 +240,6 @@ def get_wpm_chart(show_medians=False):
 
     return layered_chart
 
-
-if st.checkbox('Show medians'):
-
-    layered_chart = get_wpm_chart(show_medians=True)
-
-else:
-    
-    layered_chart = get_wpm_chart(show_medians=False)
-
-st.altair_chart(layered_chart, use_container_width=True)
-
-st.markdown("To put this data into perspective, native Japanese speakers \
-            tend to speak at rates of over 200 wpm, meaning that most of the videos \
-            on CIJ have been adapted to be a lot slower than that!")
-
 @st.cache_data
 def get_wpm_vs_sps_chart(interactive=False):
 
@@ -368,60 +323,6 @@ def get_wpm_vs_sps_chart(interactive=False):
         return scatter_plot.interactive()
     else:
         return scatter_plot
-    
-if st.checkbox('Enable zooming and panning ( ↕ / ↔️ )'):
-    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=True)
-else:
-    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=False)
-
-st.altair_chart(wpm_vs_sps_chart, use_container_width=True)
-
-st.markdown("We can also measure the rate of speech in syllables per second (SPS) \
-            and compare it to words per minute.")
-
-st.markdown("(Also, FYI, most of these **graphs are \
-            interactive** so please click around.)")
-
-###
-# STATISTICS LESSON
-###
-st.markdown("## A quick statistics lesson")
-
-st.markdown("Before we continue this analysis, there's some basic things you should know.")
-
-st.markdown("### The data")
-
-st.markdown("The dataset we'll be analyzing comprises of just under 1,000 videos. \
-            In particular, we'll be analyzing the subtitles of the videos.")
-
-st.markdown('Every video has a Level: **Complete Beginner**, **Beginner**, \
-            **Intermediate**, or **Advanced**.')
-
-st.markdown("### The statistics")
-
-st.markdown("The goal of this analysis is to find features in the video data that lead \
-            to a specific pattern called an \"ordering\".")
-
-st.markdown("We're specifically looking for *any* statistic that can lead to an \
-            ordering of the levels in one of the two following orders:")
-
-st.markdown("> Complete Beginner < Beginner < Intermediate < Advanced")
-st.markdown("or")
-st.markdown("> Complete Beginner > Beginner > Intermediate > Advanced")
-
-st.markdown("For example: if a statistic is small for Complete Beginnner videos, but gets bigger \
-            for Beginner, Intermediate, then Advanced videos, it suggests \
-            that this is a good statistic for determining what makes a video comprehensible. \
-            In fact, we already saw this above when measuring the **words per minute** statistic.")
-
-st.markdown("Okay! Now we can continue.")
-
-###
-# SENTENCE LENGTH
-###
-st.markdown("## Sentence length")
-
-st.markdown("Videos meant for beginners tend to have shorter sentences on average.")
 
 @st.cache_data
 def get_sentence_length_hist(show_medians=False):
@@ -564,26 +465,6 @@ def get_sentence_length_hist(show_medians=False):
         layered_chart = alt.layer(histogram, background='white')
 
     return layered_chart
-
-if st.checkbox('Show medians', key='sentence_length'):
-
-    sentence_length_hist = get_sentence_length_hist(show_medians=True)
-
-else:
-    
-    sentence_length_hist = get_sentence_length_hist(show_medians=False)
-
-st.altair_chart(sentence_length_hist, use_container_width=True)
-
-st.markdown("This makes sense because long sentences generally tend to be more complex and packed with information \
-            whereas short sentences are usually easier to understand.")
-
-###
-# AMOUNT OF REPETITION
-###
-st.markdown("## Amount of repetition")
-
-st.markdown("Words are repeated more often in easier videos.")
 
 @st.cache_data
 def get_repetition_hist(show_medians=False):
@@ -735,36 +616,6 @@ def get_repetition_hist(show_medians=False):
 
     return layered_chart
 
-if st.checkbox('Show medians', key='repetition'):
-
-    repetition_hist = get_repetition_hist(show_medians=True)
-
-else:
-    
-    repetition_hist = get_repetition_hist(show_medians=False)
-
-st.altair_chart(repetition_hist, use_container_width=True)
-
-
-st.markdown("If you don't catch a word the first time it's said, there's more opportunities \
-            in the easier videos to hear that word again.")
-
-###
-# HOW MANY WORDS
-###
-st.markdown("## How many words you need to know")
-
-st.markdown("A popular statistic in language learning circles is that you generally \
-            need to know around 98% of words in a given piece of content to understand it well. \
-            This statistic is known as 'word coverage', the percentage of words you know in a given text.")
-
-st.markdown("How many words do you need to know to understand 98% of the words in each level?")
-
-st.markdown("If we take all the words in CIJ, count them then order them from most common, to least common, \
-             we can calculate the word coverage you get at different vocabulary sizes. \
-            For example, if we learn the top 500 words from CIJ, then we'll know around 80% of the words in the \
-            Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in that category.")
-
 @st.cache_data
 def get_word_coverage_chart(zoom=False):
 
@@ -900,20 +751,6 @@ def get_word_coverage_chart(zoom=False):
     layered_chart = alt.layer(line_chart, vertical_lines, text_labels, background='white')
 
     return layered_chart
-
-if st.checkbox('Zoom in'):
-
-    word_coverage_chart = get_word_coverage_chart(zoom=True)
-
-else:
-
-    word_coverage_chart = get_word_coverage_chart(zoom=False)
-
-st.altair_chart(word_coverage_chart, use_container_width=True)
-
-st.markdown("Using the same method of calculating word coverage as before, \
-            we can also calculate how many of the top words you need to know \
-            to achieve 98% word coverage in each video.")
 
 @st.cache_data
 def get_ne_spot_hist(show_medians=False):
@@ -1055,25 +892,6 @@ def get_ne_spot_hist(show_medians=False):
 
     return layered_chart
 
-if st.checkbox('Show medians', key='ne_spot'):
-
-    ne_spot_hist = get_ne_spot_hist(show_medians=True)
-
-else:
-    
-    ne_spot_hist = get_ne_spot_hist(show_medians=False)
-
-st.altair_chart(ne_spot_hist, use_container_width=True)
-
-st.markdown("In general, easier videos require smaller vocabulary sizes to understand.")
-
-###
-# WORD RARENESS
-###
-st.markdown("## Word rareness")
-
-st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
-
 @st.cache_data
 def get_tfplr_hist(show_medians=False):
 
@@ -1212,37 +1030,6 @@ def get_tfplr_hist(show_medians=False):
         layered_chart = alt.layer(histogram, background='white')
 
     return layered_chart
-
-if st.checkbox('Show medians', key='tfplr'):
-
-    tfplr_hist = get_tfplr_hist(show_medians=True)
-
-else:
-    
-    tfplr_hist = get_tfplr_hist(show_medians=False)
-
-st.altair_chart(tfplr_hist, use_container_width=True)
-
-st.markdown("How common a word is, is known as its 'rank'. The most common word \
-            in a text would be rank 1 and the fifth most common would be rank 5. \
-            A word with a low rank is a commonly used word (e.g., 'it', 'walk', 'up') whereas a word with a high rank \
-            is an uncommon or 'rare' word (e.g., 'esoteric', 'gauche', 'gallant').")
-
-st.markdown("The words in the videos were compared to the ranks of words generated from a frequency list made from over 4,000 Japanese Netflix \
-            TV episodes and movies. Duplicate ranks in the videos were removed, scaled with a log \
-            function then used to compute the 25th percentile. This was necessary due \
-            to power-law nature of word frequency distributions.")
-
-st.markdown("(It's okay ff the above didn't quite make sense to you - just know that the above graph \
-            demonstrates that easier videos tend to use more common words whereas \
-            advanced videos tend to use more rare words!)")
-
-###
-# GRAMMAR
-###
-st.markdown("## Grammar")
-
-st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/u/pos/SCONJ.html) than harder videos.")
 
 @st.cache_data
 def get_sconj_hist(show_medians=False):
@@ -1386,33 +1173,6 @@ def get_sconj_hist(show_medians=False):
 
     return layered_chart
 
-if st.checkbox('Show medians', key='sconj'):
-
-    sconj_hist = get_sconj_hist(show_medians=True)
-
-else:
-    
-    sconj_hist = get_sconj_hist(show_medians=False)
-
-st.altair_chart(sconj_hist, use_container_width=True)
-
-st.markdown("We also notice differences in the use of other types of words.")
-
-st.markdown(
-    '<div class="dataframe-div">' + grammar_table.to_html() + "</div>"
-    , unsafe_allow_html=True)
-
-###
-# WORD ORIGIN
-###
-st.markdown("## What type of word")
-
-st.markdown("There are three main categories of words in Japanese:")
-st.markdown("(1) Wago (和語), (2) Kango (漢語) and (3) Gairaigo (外来語)")
-st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaigo are foreign words.")
-
-st.markdown("Harder videos tend to use more Kango than easier videos")
-
 @st.cache_data
 def get_kango_hist(show_medians=False):
 
@@ -1554,36 +1314,6 @@ def get_kango_hist(show_medians=False):
 
     return layered_chart
 
-if st.checkbox('Show medians', key='kango'):
-
-    kango_hist = get_kango_hist(show_medians=True)
-
-else:
-    
-    kango_hist = get_kango_hist(show_medians=False)
-
-st.altair_chart(kango_hist, use_container_width=True)
-
-st.markdown("In Japanese, Kango are somewhat analogous to French words in English. \
-            These words tend to be more technical or sophisticated than other words.")
-
-st.markdown("We also notice orderings when counting the percentage of Wago and Gairaigo as well.")
-
-st.markdown(
-    '<div class="dataframe-div">' + word_origin_table.to_html() + "</div>"
-    , unsafe_allow_html=True)
-
-###
-# MOST IMPORTANT FACTORS
-###
-st.markdown("## Which factors matter the most?")
-
-st.markdown("We've just found a number of statistics that lead to orderings in the data \
-            but which statistics matter the most?")
-
-st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
-            and observe which statistics correlate the most strongly with the video's level.")
-
 @st.cache_data
 def render_vanilla_heatmap():
 
@@ -1599,17 +1329,6 @@ def render_vanilla_heatmap():
     sns.heatmap(sorted_corr_matrix, annot=True, cmap='coolwarm', fmt=".3f")
 
     st.pyplot(plt.gcf())
-
-render_vanilla_heatmap()
-
-st.markdown("In case you're not familiar with stuff like this, numbers close to 1 or -1 \
-            represent a high level or correlation and numbers close to 0 represent a low level of correlation. \
-            Positive numbers represent a positive relationship between the variables and negative numbers represent a \
-            reverse relationship between the variables.")
-
-st.markdown("Using a statistics rule of thumb and removing all variables that have correlations \
-            weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
-
 
 @st.cache_data
 def render_level_row_unordered():
@@ -1650,6 +1369,293 @@ def render_level_col_ordered():
     sns.heatmap(transposed_corr_matrix, annot=True, cmap='coolwarm', fmt=".3f", cbar_kws={'label': 'Correlation'})
 
     st.pyplot(plt.gcf())
+
+# load the data
+video_df, word_coverage_df, num_video_df = load_dataframes()
+grammar_table = get_grammar_table()
+word_origin_table = get_word_origin_table()
+
+st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
+
+st.markdown("[Code can be found [here](https://github.com/joshdavham/cij-analysis)]")
+
+st.markdown("# What makes comprehensible input *comprehensible*?")
+
+st.markdown("**Comprehensible input** (or CI, for short) is a language teaching technique where teachers \
+            speak in a way that is understandable to their students. \
+            It is believed by many that CI is one of the most optimal and natural \
+             ways to acquire a foreign language \
+            ...but, what exactly is about CI that makes it comprehensible?")
+
+
+
+st.markdown("To answer this question, I'll be analyzing the videos on \
+            [cijapanese.com](https://cijapanese.com/) (CIJ), a \
+            video platform for learning Japanese.")
+
+###
+# RATE OF SPEECH
+###
+st.markdown("## How fast is CI?")
+
+st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
+            they speak more slowly in videos meant for beginners and more quickly \
+            for advanced learners.")
+
+if st.checkbox('Show medians'):
+
+    layered_chart = get_wpm_chart(show_medians=True)
+
+else:
+    
+    layered_chart = get_wpm_chart(show_medians=False)
+
+st.altair_chart(layered_chart, use_container_width=True)
+
+st.markdown("To put this data into perspective, native Japanese speakers \
+            tend to speak at rates of over 200 wpm, meaning that most of the videos \
+            on CIJ have been adapted to be a lot slower than that!")
+    
+if st.checkbox('Enable zooming and panning ( ↕ / ↔️ )'):
+    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=True)
+else:
+    wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=False)
+
+st.altair_chart(wpm_vs_sps_chart, use_container_width=True)
+
+st.markdown("We can also measure the rate of speech in syllables per second (SPS) \
+            and compare it to words per minute.")
+
+st.markdown("(Also, FYI, most of these **graphs are \
+            interactive** so please click around.)")
+
+###
+# STATISTICS LESSON
+###
+st.markdown("## A quick statistics lesson")
+
+st.markdown("Before we continue this analysis, there's some basic things you should know.")
+
+st.markdown("### The data")
+
+st.markdown("The dataset we'll be analyzing comprises of just under 1,000 videos. \
+            In particular, we'll be analyzing the subtitles of the videos.")
+
+st.markdown('Every video has a Level: **Complete Beginner**, **Beginner**, \
+            **Intermediate**, or **Advanced**.')
+
+st.markdown("### The statistics")
+
+st.markdown("The goal of this analysis is to find features in the video data that lead \
+            to a specific pattern called an \"ordering\".")
+
+st.markdown("We're specifically looking for *any* statistic that can lead to an \
+            ordering of the levels in one of the two following orders:")
+
+st.markdown("> Complete Beginner < Beginner < Intermediate < Advanced")
+st.markdown("or")
+st.markdown("> Complete Beginner > Beginner > Intermediate > Advanced")
+
+st.markdown("For example: if a statistic is small for Complete Beginnner videos, but gets bigger \
+            for Beginner, Intermediate, then Advanced videos, it suggests \
+            that this is a good statistic for determining what makes a video comprehensible. \
+            In fact, we already saw this above when measuring the **words per minute** statistic.")
+
+st.markdown("Okay! Now we can continue.")
+
+###
+# SENTENCE LENGTH
+###
+st.markdown("## Sentence length")
+
+st.markdown("Videos meant for beginners tend to have shorter sentences on average.")
+
+
+if st.checkbox('Show medians', key='sentence_length'):
+
+    sentence_length_hist = get_sentence_length_hist(show_medians=True)
+
+else:
+    
+    sentence_length_hist = get_sentence_length_hist(show_medians=False)
+
+st.altair_chart(sentence_length_hist, use_container_width=True)
+
+st.markdown("This makes sense because long sentences generally tend to be more complex and packed with information \
+            whereas short sentences are usually easier to understand.")
+
+###
+# AMOUNT OF REPETITION
+###
+st.markdown("## Amount of repetition")
+
+st.markdown("Words are repeated more often in easier videos.")
+
+if st.checkbox('Show medians', key='repetition'):
+
+    repetition_hist = get_repetition_hist(show_medians=True)
+
+else:
+    
+    repetition_hist = get_repetition_hist(show_medians=False)
+
+st.altair_chart(repetition_hist, use_container_width=True)
+
+
+st.markdown("If you don't catch a word the first time it's said, there's more opportunities \
+            in the easier videos to hear that word again.")
+
+###
+# HOW MANY WORDS
+###
+st.markdown("## How many words you need to know")
+
+st.markdown("A popular statistic in language learning circles is that you generally \
+            need to know around 98% of words in a given piece of content to understand it well. \
+            This statistic is known as 'word coverage', the percentage of words you know in a given text.")
+
+st.markdown("How many words do you need to know to understand 98% of the words in each level?")
+
+st.markdown("If we take all the words in CIJ, count them then order them from most common, to least common, \
+             we can calculate the word coverage you get at different vocabulary sizes. \
+            For example, if we learn the top 500 words from CIJ, then we'll know around 80% of the words in the \
+            Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in that category.")
+
+if st.checkbox('Zoom in'):
+
+    word_coverage_chart = get_word_coverage_chart(zoom=True)
+
+else:
+
+    word_coverage_chart = get_word_coverage_chart(zoom=False)
+
+st.altair_chart(word_coverage_chart, use_container_width=True)
+
+st.markdown("Using the same method of calculating word coverage as before, \
+            we can also calculate how many of the top words you need to know \
+            to achieve 98% word coverage in each video.")
+
+if st.checkbox('Show medians', key='ne_spot'):
+
+    ne_spot_hist = get_ne_spot_hist(show_medians=True)
+
+else:
+    
+    ne_spot_hist = get_ne_spot_hist(show_medians=False)
+
+st.altair_chart(ne_spot_hist, use_container_width=True)
+
+st.markdown("In general, easier videos require smaller vocabulary sizes to understand.")
+
+###
+# WORD RARENESS
+###
+st.markdown("## Word rareness")
+
+st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
+
+if st.checkbox('Show medians', key='tfplr'):
+
+    tfplr_hist = get_tfplr_hist(show_medians=True)
+
+else:
+    
+    tfplr_hist = get_tfplr_hist(show_medians=False)
+
+st.altair_chart(tfplr_hist, use_container_width=True)
+
+st.markdown("How common a word is, is known as its 'rank'. The most common word \
+            in a text would be rank 1 and the fifth most common would be rank 5. \
+            A word with a low rank is a commonly used word (e.g., 'it', 'walk', 'up') whereas a word with a high rank \
+            is an uncommon or 'rare' word (e.g., 'esoteric', 'gauche', 'gallant').")
+
+st.markdown("The words in the videos were compared to the ranks of words generated from a frequency list made from over 4,000 Japanese Netflix \
+            TV episodes and movies. Duplicate ranks in the videos were removed, scaled with a log \
+            function then used to compute the 25th percentile. This was necessary due \
+            to power-law nature of word frequency distributions.")
+
+st.markdown("(It's okay ff the above didn't quite make sense to you - just know that the above graph \
+            demonstrates that easier videos tend to use more common words whereas \
+            advanced videos tend to use more rare words!)")
+
+###
+# GRAMMAR
+###
+st.markdown("## Grammar")
+
+st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/u/pos/SCONJ.html) than harder videos.")
+
+if st.checkbox('Show medians', key='sconj'):
+
+    sconj_hist = get_sconj_hist(show_medians=True)
+
+else:
+    
+    sconj_hist = get_sconj_hist(show_medians=False)
+
+st.altair_chart(sconj_hist, use_container_width=True)
+
+st.markdown("We also notice differences in the use of other types of words.")
+
+st.markdown(
+    '<div class="dataframe-div">' + grammar_table.to_html() + "</div>"
+    , unsafe_allow_html=True)
+
+###
+# WORD ORIGIN
+###
+st.markdown("## What type of word")
+
+st.markdown("There are three main categories of words in Japanese:")
+st.markdown("(1) Wago (和語), (2) Kango (漢語) and (3) Gairaigo (外来語)")
+st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaigo are foreign words.")
+
+st.markdown("Harder videos tend to use more Kango than easier videos")
+
+
+if st.checkbox('Show medians', key='kango'):
+
+    kango_hist = get_kango_hist(show_medians=True)
+
+else:
+    
+    kango_hist = get_kango_hist(show_medians=False)
+
+st.altair_chart(kango_hist, use_container_width=True)
+
+st.markdown("In Japanese, Kango are somewhat analogous to French words in English. \
+            These words tend to be more technical or sophisticated than other words.")
+
+st.markdown("We also notice orderings when counting the percentage of Wago and Gairaigo as well.")
+
+st.markdown(
+    '<div class="dataframe-div">' + word_origin_table.to_html() + "</div>"
+    , unsafe_allow_html=True)
+
+###
+# MOST IMPORTANT FACTORS
+###
+st.markdown("## Which factors matter the most?")
+
+st.markdown("We've just found a number of statistics that lead to orderings in the data \
+            but which statistics matter the most?")
+
+st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
+            and observe which statistics correlate the most strongly with the video's level.")
+
+
+render_vanilla_heatmap()
+
+st.markdown("In case you're not familiar with stuff like this, numbers close to 1 or -1 \
+            represent a high level or correlation and numbers close to 0 represent a low level of correlation. \
+            Positive numbers represent a positive relationship between the variables and negative numbers represent a \
+            reverse relationship between the variables.")
+
+st.markdown("Using a statistics rule of thumb and removing all variables that have correlations \
+            weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
+
+
+
 
 if st.checkbox('Flip and sort'):
     render_level_col_ordered()
