@@ -110,10 +110,6 @@ def get_wpm_chart(show_medians=False):
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
 
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
-
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
         binSpacing=3,
@@ -243,10 +239,6 @@ def get_wpm_chart(show_medians=False):
 @st.cache_data
 def get_wpm_vs_sps_chart(interactive=False):
 
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
-
     scatter_plot = alt.Chart(video_df).mark_circle(
         cursor='pointer',
         size=80,
@@ -332,10 +324,6 @@ def get_sentence_length_hist(show_medians=False):
         'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
-
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
@@ -478,10 +466,6 @@ def get_repetition_hist(show_medians=False):
         'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
-
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
     histogram = alt.Chart(sub_video_df).mark_bar(
         opacity=0.5,
@@ -630,10 +614,6 @@ def get_word_coverage_chart(zoom=False):
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
 
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
-
     line_chart = alt.Chart(word_coverage_df_sub).mark_line(
         cursor='pointer',
         point=False,
@@ -760,10 +740,6 @@ def get_ne_spot_hist(show_medians=False):
         'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
-
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
@@ -900,10 +876,6 @@ def get_tfplr_hist(show_medians=False):
         'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
-
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
@@ -1042,10 +1014,6 @@ def get_sconj_hist(show_medians=False):
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
 
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
-
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
         binSpacing=3,
@@ -1183,10 +1151,6 @@ def get_kango_hist(show_medians=False):
         'level': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced'],
         'text': ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced']
     })
-
-    selection = alt.selection_point(fields=['level'], bind='legend', on='click')
-
-    highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
     histogram = alt.Chart(video_df).mark_bar(
         opacity=0.5,
@@ -1374,6 +1338,10 @@ def render_level_col_ordered():
 video_df, word_coverage_df, num_video_df = load_dataframes()
 grammar_table = get_grammar_table()
 word_origin_table = get_word_origin_table()
+
+# allows interactivity in the vega altair plots
+selection = alt.selection_point(fields=['level'], bind='legend', on='click')
+highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
 st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
 
