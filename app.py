@@ -9,6 +9,17 @@ st.set_page_config(
     page_icon='favicon.svg'
 )
 
+# colors white the index columns of rendered dataframes
+st.markdown(
+    """
+    <style>
+    .dataframe-div {
+        background-color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
+
 @st.cache_data
 def load_dataframes():
 
@@ -18,8 +29,80 @@ def load_dataframes():
 
     return video_df, word_coverage_df, num_video_df
 
-video_df, word_coverage_df, num_video_df = load_dataframes()
+def get_grammar_table():
 
+    data = {
+        'Complete Beginner': [0.02638719922016275 ,0.0192492959834, 0.00476028625918155, 0.2503071253071253],
+        'Beginner': [0.0473047304730473, 0.0266429840142095, 0.005813953488372, 0.2454068241469816],
+        'Intermediate': [0.06625719079578135, 0.03514773095199635, 0.0087719298245614, 0.23239271705403663],
+        'Advanced': [0.0766787658802177, 0.0373056994818652, 0.0108588351431391, 0.2237101220953131]
+    }
+    df = pd.DataFrame(data)
+
+    row_labels = ['Median Perc. Subordinating Conjunctions', 'Median Perc. Adverbs', 'Median Perc. Determiners', 'Median Perc. Nouns']
+    df.index = row_labels
+
+    styled_df = df.style.set_table_styles(
+        {
+            'Complete Beginner': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Beginner': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Intermediate': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Advanced': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ]
+    }).set_properties(**{'background-color': 'white'}).format("{:.2%}")
+
+    return styled_df
+
+def get_word_origin_table():
+
+    data = {
+        'Complete Beginner': [0.06999874574159035, 0.8578043261266064, 0.03301790801790795],
+        'Beginner': [0.0955284552845528, 0.8399311531841652, 0.0279441117764471],
+        'Intermediate': [0.1165702954621605, 0.8259877335615461, 0.0241447813837379],
+        'Advanced': [0.1303328645100797, 0.8225274725274725, 0.0157535445475231],
+    }
+    df = pd.DataFrame(data)
+
+    row_labels = ['Median Perc. Kango (漢語)', 'Median Perc. Wago (和語)', 'Median Perc. Garaigo (外来語)']
+    df.index = row_labels
+
+    styled_df = df.style.set_table_styles(
+        {
+            'Complete Beginner': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Beginner': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Intermediate': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+            'Advanced': [
+                {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
+                {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
+            ],
+    }).set_properties(**{'background-color': 'white'}).format("{:.2%}")
+
+    return styled_df
+
+
+video_df, word_coverage_df, num_video_df = load_dataframes()
+grammar_table = get_grammar_table()
+word_origin_table = get_word_origin_table()
 
 st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
 
@@ -1315,49 +1398,8 @@ st.altair_chart(sconj_hist, use_container_width=True)
 
 st.markdown("We also notice differences in the use of other types of words.")
 
-data = {
-    'Complete Beginner': [0.02638719922016275 ,0.0192492959834, 0.00476028625918155, 0.2503071253071253],
-    'Beginner': [0.0473047304730473, 0.0266429840142095, 0.005813953488372, 0.2454068241469816],
-    'Intermediate': [0.06625719079578135, 0.03514773095199635, 0.0087719298245614, 0.23239271705403663],
-    'Advanced': [0.0766787658802177, 0.0373056994818652, 0.0108588351431391, 0.2237101220953131]
-}
-df = pd.DataFrame(data)
-
-row_labels = ['Median Perc. Subordinating Conjunctions', 'Median Perc. Adverbs', 'Median Perc. Determiners', 'Median Perc. Nouns']
-df.index = row_labels
-
-styled_df = df.style.set_table_styles(
-    {
-        'Complete Beginner': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Beginner': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Intermediate': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Advanced': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ]
-}).set_properties(**{'background-color': 'white'}).format("{:.2%}")
-
 st.markdown(
-    """
-    <style>
-    .dataframe-divv {
-        background-color: white;
-    }
-    </style>
-    """, unsafe_allow_html=True
-)
-
-st.markdown(
-    '<div class="dataframe-divv">' + styled_df.to_html() + "</div>"
+    '<div class="dataframe-div">' + grammar_table.to_html() + "</div>"
     , unsafe_allow_html=True)
 
 ###
@@ -1527,39 +1569,8 @@ st.markdown("In Japanese, Kango are somewhat analogous to French words in Englis
 
 st.markdown("We also notice orderings when counting the percentage of Wago and Gairaigo as well.")
 
-data = {
-    'Complete Beginner': [0.06999874574159035, 0.8578043261266064, 0.03301790801790795],
-    'Beginner': [0.0955284552845528, 0.8399311531841652, 0.0279441117764471],
-    'Intermediate': [0.1165702954621605, 0.8259877335615461, 0.0241447813837379],
-    'Advanced': [0.1303328645100797, 0.8225274725274725, 0.0157535445475231],
-}
-df = pd.DataFrame(data)
-
-row_labels = ['Median Perc. Kango (漢語)', 'Median Perc. Wago (和語)', 'Median Perc. Garaigo (外来語)']
-df.index = row_labels
-
-styled_df = df.style.set_table_styles(
-    {
-        'Complete Beginner': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(165, 190, 228, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Beginner': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(154, 214, 216, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Intermediate': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(199, 174, 205, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-        'Advanced': [
-            {'selector': 'th.col_heading.level0', 'props': [('background-color', 'rgba(221, 158, 158, 0.45)')]},
-            {'selector': 'td:hover', 'props': [('background-color', '#e0f7fa')]}
-        ],
-}).set_properties(**{'background-color': 'white'}).format("{:.2%}")
-
 st.markdown(
-    '<div class="dataframe-divv">' + styled_df.to_html() + "</div>"
+    '<div class="dataframe-div">' + word_origin_table.to_html() + "</div>"
     , unsafe_allow_html=True)
 
 ###
