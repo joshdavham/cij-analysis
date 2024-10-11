@@ -33,14 +33,14 @@ def load_dataframes():
 def get_grammar_table():
 
     data = {
-        'Complete Beginner': [0.02638719922016275 ,0.0192492959834, 0.00476028625918155, 0.2503071253071253],
-        'Beginner': [0.0473047304730473, 0.0266429840142095, 0.005813953488372, 0.2454068241469816],
-        'Intermediate': [0.06625719079578135, 0.03514773095199635, 0.0087719298245614, 0.23239271705403663],
-        'Advanced': [0.0766787658802177, 0.0373056994818652, 0.0108588351431391, 0.2237101220953131]
+        'Complete Beginner': [0.02638719922016275 ,0.0192492959834, 0.00476028625918155, 0.2503071253071253, 0.18554386037363785, 0.01622086690206438, 0.04537920642893019, 0.1203097143691203],
+        'Beginner': [0.0473047304730473, 0.0266429840142095, 0.005813953488372, 0.2454068241469816, 0.1773049645390071, 0.01384083044982699, 0.02676864244741874, 0.13333333333333333],
+        'Intermediate': [0.06625719079578135, 0.03514773095199635, 0.0087719298245614, 0.23239271705403663, 0.1587691162151326, 0.010784997932175352, 0.022392603507910194, 0.13379268084136123],
+        'Advanced': [0.0766787658802177, 0.0373056994818652, 0.0108588351431391, 0.2237101220953131, 0.14922184925236498, 0.009050978304272594, 0.020185708518368994, 0.1364369670430975]
     }
     df = pd.DataFrame(data)
 
-    row_labels = ['Median Perc. Subordinating Conjunctions', 'Median Perc. Adverbs', 'Median Perc. Determiners', 'Median Perc. Nouns']
+    row_labels = ['Median Perc. Subordinating Conjunctions', 'Median Perc. Adverbs', 'Median Perc. Determiners', 'Median Perc. Nouns', 'Median Perc. Auxiliaries', 'Median Perc. Numerals', 'Median Perc. Pronouns', 'Median Perc. Verbs']
     df.index = row_labels
 
     styled_df = df.style.set_table_styles(
@@ -164,8 +164,8 @@ def get_wpm_chart(show_medians=False):
         ),
         tooltip=[
             alt.Tooltip('wpm:Q', title='Words per minute:', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -285,10 +285,9 @@ def get_wpm_vs_sps_chart(interactive=False):
         ),
         tooltip=[
             alt.Tooltip('video:N', title='Video number:'),
-            alt.Tooltip('level:N', title='Level:'),
             alt.Tooltip('wpm:Q', title='WPM:'),
             alt.Tooltip('sps:Q', title='SPS:'),
-
+            alt.Tooltip('level:N', title='Level:'),
         ],
         opacity=alt.condition(selection, alt.value(1.0), alt.value(0.2)),
     ).properties(
@@ -336,7 +335,7 @@ def get_sentence_length_hist(show_medians=False):
         alt.X(
             'mean_sentence_length:Q',
             bin=alt.Bin(maxbins=30),
-            title='Average sentence length',
+            title='Words per sentence',
             axis=alt.Axis(
                 labelFontSize=14, 
                 titleFontSize=18,
@@ -379,8 +378,8 @@ def get_sentence_length_hist(show_medians=False):
         ),
         tooltip=[
             alt.Tooltip('mean_sentence_length:Q', title='Average sentence length:', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -388,7 +387,7 @@ def get_sentence_length_hist(show_medians=False):
         width='container',
         height=500,
         title=alt.TitleParams(
-            text='Average number of words per sentence (sentence length)',
+            text='Average sentence length (words per sentence)',
             offset=20,
             fontSize=24,
             fontWeight='normal',
@@ -409,7 +408,7 @@ def get_sentence_length_hist(show_medians=False):
     ).encode(
         x='x:Q',
         tooltip=[
-            alt.Tooltip('x:N', title='Median average sentence length:'),
+            alt.Tooltip('x:N', title='Median avg. sentence length:'),
             alt.Tooltip('level:N', title='Level:')
         ],
         color=alt.Color(
@@ -478,7 +477,7 @@ def get_repetition_hist(show_medians=False):
         alt.X(
             'average_rel_reps_perc:Q',
             bin=alt.Bin(maxbins=30),
-            title='Average relative repetitions (%)',
+            title='Word repetitions (%)',
             axis=alt.Axis(
                 labelFontSize=14, 
                 titleFontSize=18,
@@ -520,9 +519,9 @@ def get_repetition_hist(show_medians=False):
             )
         ),
         tooltip=[
-            alt.Tooltip('average_rel_reps:Q', title='Average relative repetitions:', bin=True),
+            alt.Tooltip('average_rel_reps:Q', title='Average repetitions (%):', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -530,7 +529,7 @@ def get_repetition_hist(show_medians=False):
         width='container',
         height=500,
         title=alt.TitleParams(
-            text='Relative repetitions of words',
+            text='Average amount of repetition per word',
             offset=20,
             fontSize=24,
             fontWeight='normal',
@@ -553,7 +552,7 @@ def get_repetition_hist(show_medians=False):
             'x:Q'
         ),
         tooltip=[
-            alt.Tooltip('x:N', title='Median average relative repetitions:'),
+            alt.Tooltip('x:N', title='Median avg. repetitions (%):'),
             alt.Tooltip('level:N', title='Level:')
         ],
         color=alt.Color(
@@ -664,7 +663,7 @@ def get_word_coverage_chart(zoom=False):
             alt.Tooltip('word:N', title='Word: '),
             alt.Tooltip('rank:Q', title="CIJ rank: "),
             alt.Tooltip('coverage_perc_str:N', title='Word coverage: '),
-            alt.Tooltip('level:N', title='Level: ')
+            alt.Tooltip('level:N', title='Curve: ')
         ],
         opacity=alt.condition(selection, alt.value(1.0), alt.value(0.2)),
         strokeWidth=alt.condition(selection | highlight, alt.value(6), alt.value(2))
@@ -752,7 +751,7 @@ def get_ne_spot_hist(show_medians=False):
         alt.X(
             'ne_spot:Q',
             bin=alt.Bin(maxbins=30),
-            title='Number of most common CIJ words known',
+            title='Number of words known',
             axis=alt.Axis(
                 labelFontSize=14, 
                 titleFontSize=18,
@@ -794,9 +793,9 @@ def get_ne_spot_hist(show_medians=False):
             )
         ),
         tooltip=[
-            alt.Tooltip('ne_spot:Q', title='Vocab size needed for 98% cov:', bin=True),
-            alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
+            alt.Tooltip('ne_spot:Q', title='Vocab size for 98%.:', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
+            alt.Tooltip('level:N', title='Level:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -804,7 +803,7 @@ def get_ne_spot_hist(show_medians=False):
         width='container',
         height=500,
         title=alt.TitleParams(
-            text='Vocab size needed for 98% coverage',
+            text='Vocab size needed for 98% coverage (videos)',
             offset=20,
             fontSize=24,
             fontWeight='normal',
@@ -930,9 +929,9 @@ def get_tfplr_hist(show_medians=False):
             )
         ),
         tooltip=[
-            alt.Tooltip('tfp_log_ranks_unique:Q', title='25th percentile word-frequency log rank:', bin=True),  # Properly indicate that `wpm` is binned
+            alt.Tooltip('tfp_log_ranks_unique:Q', title='25th perc. log rank:', bin=True),  # Properly indicate that `wpm` is binned
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -961,7 +960,7 @@ def get_tfplr_hist(show_medians=False):
     ).encode(
         x='x:Q',
         tooltip=[
-            alt.Tooltip('x:N', title='Median 25th percentile word-frequency log rank:'),
+            alt.Tooltip('x:N', title='Median 25th perc. log rank:'),
             alt.Tooltip('level:N', title='Level:')
         ],
         color=alt.Color(
@@ -1025,7 +1024,7 @@ def get_sconj_hist(show_medians=False):
         alt.X(
             'sconj_props_perc:Q',
             bin=alt.Bin(maxbins=30),
-            title='Percentage of words',
+            title='Percentage of sub. conj.',
             axis=alt.Axis(
                 labelFontSize=14, 
                 titleFontSize=18,
@@ -1067,9 +1066,9 @@ def get_sconj_hist(show_medians=False):
             )
         ),
         tooltip=[
-            alt.Tooltip('sconj_props_perc:Q', title='Percentage of subordinating conjunctions:', bin=True),
+            alt.Tooltip('sconj_props_perc:Q', title='Perc. sub. conj:', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -1077,7 +1076,7 @@ def get_sconj_hist(show_medians=False):
         width='container',
         height=500,
         title=alt.TitleParams(
-            text='Percentages of subordinating conjunctions',
+            text='Frequency of subordinating conjunctions',
             offset=20,
             fontSize=24,
             fontWeight='normal',
@@ -1098,7 +1097,7 @@ def get_sconj_hist(show_medians=False):
     ).encode(
         x='x:Q',
         tooltip=[
-            alt.Tooltip('x:N', title='Median percentage of subordinating conjunctions:'),
+            alt.Tooltip('x:N', title='Median perc. of sub. conj:'),
             alt.Tooltip('level:N', title='Level:')
         ],
         color=alt.Color(
@@ -1163,7 +1162,7 @@ def get_kango_hist(show_medians=False):
         alt.X(
             'kan_props_perc:Q',
             bin=alt.Bin(maxbins=30),
-            title='Percentage of words',
+            title='Percentage of kango',
             axis=alt.Axis(
                 labelFontSize=14, 
                 titleFontSize=18,
@@ -1206,8 +1205,8 @@ def get_kango_hist(show_medians=False):
         ),
         tooltip=[
             alt.Tooltip('kan_props_perc:Q', title='Percentage of kango:', bin=True),
+            alt.Tooltip('count()', title='Video count:'),
             alt.Tooltip('level:N', title='Level:'),
-            alt.Tooltip('count()', title='Video count:')
         ],
         opacity=alt.condition(selection, alt.value(0.75), alt.value(0.1)),
         strokeWidth=alt.condition(highlight, alt.value(2), alt.value(1))
@@ -1215,7 +1214,7 @@ def get_kango_hist(show_medians=False):
         width='container',
         height=500,
         title=alt.TitleParams(
-            text='Percentages of kango (漢語)',
+            text='Frequency of kango',
             offset=20,
             fontSize=24,
             fontWeight='normal',
@@ -1236,7 +1235,7 @@ def get_kango_hist(show_medians=False):
     ).encode(
         x='x:Q',
         tooltip=[
-            alt.Tooltip('x:N', title='Median percentage of kango:'),
+            alt.Tooltip('x:N', title='Median perc. kango:'),
             alt.Tooltip('level:N', title='Level:')
         ],
         color=alt.Color(
@@ -1278,7 +1277,7 @@ def get_kango_hist(show_medians=False):
 
     return layered_chart
 
-#@st.cache_data
+@st.cache_data
 def render_vanilla_heatmap():
 
     corr_matrix = num_video_df.corr()
@@ -1290,14 +1289,14 @@ def render_vanilla_heatmap():
     sorted_corr_matrix = corr_matrix.loc[sorted_vars, sorted_vars]
 
     plt.figure(figsize=(10, 8))
-    sns.heatmap(sorted_corr_matrix, annot=True, cmap='coolwarm', fmt=".3f")
+    sns.heatmap(sorted_corr_matrix, annot=True, cmap='coolwarm', fmt=".2f")
 
     st.pyplot(plt.gcf())
 
-#@st.cache_data
+@st.cache_data
 def render_level_row_unordered():
 
-    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
+    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo', 'Proportion of verbs', 'Proportion of numerals'], axis=1).corr()
 
     variable_of_interest = 'Level'
 
@@ -1312,10 +1311,10 @@ def render_level_row_unordered():
 
     st.pyplot(plt.gcf())
 
-#@st.cache_data
+@st.cache_data
 def render_level_col_ordered():
 
-    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
+    corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo', 'Proportion of verbs', 'Proportion of numerals'], axis=1).corr()
 
     variable_of_interest = 'Level'
 
@@ -1348,7 +1347,7 @@ highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseove
 ###
 st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
 
-st.markdown("[Code can be found [here](https://github.com/joshdavham/cij-analysis)]")
+st.markdown("[Code and data can be found [here](https://github.com/joshdavham/cij-analysis)]")
 
 st.markdown("# What makes comprehensible input *comprehensible*?")
 
@@ -1371,7 +1370,9 @@ st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
             they speak more slowly in videos meant for beginners and more quickly \
             for advanced learners.")
 
-if st.checkbox('Show medians'):
+st.markdown("**(THESE GRAPHS ARE CLICKABLE)**")
+
+if st.checkbox('Show medians', value=True, key='wpm'):
     layered_chart = get_wpm_chart(show_medians=True)
 else:
     layered_chart = get_wpm_chart(show_medians=False)
@@ -1379,7 +1380,7 @@ else:
 st.altair_chart(layered_chart, use_container_width=True)
 
 st.markdown("To put this data into perspective, native Japanese speakers \
-            tend to speak at rates of over 200 wpm, meaning that most of the videos \
+            can speak at rates of over 200 wpm, meaning that most of the videos \
             on CIJ have been adapted to be a lot slower than that!")
     
 if st.checkbox('Enable zooming and panning ( ↕ / ↔️ )'):
@@ -1391,9 +1392,6 @@ st.altair_chart(wpm_vs_sps_chart, use_container_width=True)
 
 st.markdown("We can also measure the rate of speech in syllables per second (SPS) \
             and compare it to words per minute.")
-
-st.markdown("(Also, FYI, most of these **graphs are \
-            interactive** so please click around.)")
 
 ###
 # STATISTICS LESSON
@@ -1436,7 +1434,7 @@ st.markdown("## Sentence length")
 
 st.markdown("Videos meant for beginners tend to have shorter sentences on average.")
 
-if st.checkbox('Show medians', key='sentence_length'):
+if st.checkbox('Show medians', value=True, key='sentence_length'):
     sentence_length_hist = get_sentence_length_hist(show_medians=True)
 else:
     sentence_length_hist = get_sentence_length_hist(show_medians=False)
@@ -1453,7 +1451,7 @@ st.markdown("## Amount of repetition")
 
 st.markdown("Words are repeated more often in easier videos.")
 
-if st.checkbox('Show medians', key='repetition'):
+if st.checkbox('Show medians', value=True, key='repetition'):
     repetition_hist = get_repetition_hist(show_medians=True)
 else:
     repetition_hist = get_repetition_hist(show_medians=False)
@@ -1490,7 +1488,7 @@ st.markdown("Using the same method of calculating word coverage as before, \
             we can also calculate how many of the top words you need to know \
             to achieve 98% word coverage in each video.")
 
-if st.checkbox('Show medians', key='ne_spot'):
+if st.checkbox('Show medians', value=True, key='ne_spot'):
     ne_spot_hist = get_ne_spot_hist(show_medians=True)
 else:
     
@@ -1507,7 +1505,8 @@ st.markdown("## Word rareness")
 
 st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
 
-if st.checkbox('Show medians', key='tfplr'):
+if st.checkbox('Show medians', value=True, key='tfplr'):
+    # tfplr stands for "twenty fifth percentile log rank"
     tfplr_hist = get_tfplr_hist(show_medians=True)
 else:
     tfplr_hist = get_tfplr_hist(show_medians=False)
@@ -1533,9 +1532,9 @@ st.markdown("(It's okay ff the above didn't quite make sense to you - just know 
 ###
 st.markdown("## Grammar")
 
-st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/u/pos/SCONJ.html) than harder videos.")
+st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/ja/pos/SCONJ.html) than harder videos.")
 
-if st.checkbox('Show medians', key='sconj'):
+if st.checkbox('Show medians', value=True, key='sconj'):
     sconj_hist = get_sconj_hist(show_medians=True)
 else:
     sconj_hist = get_sconj_hist(show_medians=False)
@@ -1559,7 +1558,7 @@ st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaig
 
 st.markdown("Harder videos tend to use more Kango than easier videos")
 
-if st.checkbox('Show medians', key='kango'):
+if st.checkbox('Show medians', value=True, key='kango'):
     kango_hist = get_kango_hist(show_medians=True)
 else:
     kango_hist = get_kango_hist(show_medians=False)
@@ -1596,7 +1595,7 @@ st.markdown("In case you're not familiar with stuff like this, numbers close to 
 st.markdown("Using a statistics rule of thumb and removing all variables that have correlations \
             weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
 
-if st.checkbox('Flip and sort'):
+if st.checkbox('Flip and sort by correlation strength'):
     render_level_col_ordered()
 else:
     render_level_row_unordered()
@@ -1610,9 +1609,58 @@ st.markdown("3. Amount of repetition of words")
 st.markdown("4. How common/rare the words are")
 st.markdown("5. Amount of subordinating conjunctions")
 st.markdown("6. Vocabulary size")
-st.markdown("7. Amount of adverbs")
-st.markdown("8. Amount of Chinese words")
+st.markdown("7. Amount of pronouns")
+st.markdown("8. Amount of adverbs")
+st.markdown("9. Amount of auxiliaries")
+st.markdown("10. Amount of Chinese words")
+
+st.markdown("## Dicussion")
+
+#st.markdown('')
 
 st.markdown("### Thanks for reading ✌️")
 
 st.markdown("---")
+
+st.markdown("#### Futher discussion for hardcore nerds")
+
+st.markdown("- No tests of statistical significance were conducted. This was purely meant as an EDA. \
+            However, you can get the data from the repo linked at the top and conduct them yourself if you'd like. \
+            I'd recommend starting with non-parametric tests like Kruskal-Wallis and moving on to pairwise tests \
+            with a bonferonni correction if it's significant. Parametric tests may also be interesting.")
+
+st.markdown("- Technically, I computed 'moras per second' - not syllables per second. I'm aware that this \
+            is technically linguistically incorrect, but it still serves as close approximation and is easier \
+            to understand for readers unfamiliar with Japanese linguistics.")
+
+st.markdown("- The Mecab and Sudachi parsers (through Fugashi and Spacy) were used to analyze the transcripts. These parsers are not always 100% accurate.")
+
+st.markdown("- When computing the statistics for repetition, word coverage and word frequency, lemmas were used rather than tokens.")
+
+st.markdown("- Of the parsed words, while I did remove punctuation, I didn't otherwise verify that each token was an actual word. \
+            There is likely some amount of noise in the data such as mis-parses, etc.")
+
+st.markdown("- If you're like me, the word coverage plots also probably evoked a resemblance to Heap's Law. \
+            More research would need to be done, but I suspect one may be able to find a link between word coverage and Heap's Law.")
+
+st.markdown("- One should bare in mind that the learner levels were labelled by a small group of experts and not a large number of learners. \
+            In other words, the difficulty levels are not objective, but rather an approximation of difficulty / natural acquistion order.")
+
+st.markdown("- There were a number of statistics I also tried but didn't get orderings from:")
+
+st.markdown("1. **Audibility** - My hypothesis was that the teachers would speak more clearly in easy videos and less clearly in harder videos. \
+            To test this, I generated whisper transcripts for each video's audio file, converted both the whisper transcript \
+            and the original transcript to katakana and compared the character error rate. I found no differences in the levels. \
+            Furthermore I can't tell if this moreso invalidates my original hypothesis or if whisper is just that good.")
+
+st.markdown("2. **Word length** - At least in English and French (the languages I know the best), longer words are generally considered harder. \
+            My hypothesis was that the easier videos would use shorter words while the harder videos would use bigger words. \
+            To test this, I parsed the transcripts and converted all words to katakana \
+            to get a measure of how long the words were orally. I found no differences between the levels.")
+
+st.markdown("3. **Range of vocabulary** - I suspected that easier videos may limit themselves to a smaller range of vocabulary than harder videos. \
+            To measure this, I calculated unique word occurences / total word occurences but I found no ordering in the levels.")
+
+st.markdown("4. **Other parts of speech** - I did test for orderings between the levels for other parts of speech such as: \
+            proportion of adjectives, adpositions, coordinating conjunctions, interjections, particles and proper nouns \
+            but ultimately didn't find any obvious orderings.")
