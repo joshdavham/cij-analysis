@@ -1278,7 +1278,7 @@ def get_kango_hist(show_medians=False):
 
     return layered_chart
 
-@st.cache_data
+#@st.cache_data
 def render_vanilla_heatmap():
 
     corr_matrix = num_video_df.corr()
@@ -1294,7 +1294,7 @@ def render_vanilla_heatmap():
 
     st.pyplot(plt.gcf())
 
-@st.cache_data
+#@st.cache_data
 def render_level_row_unordered():
 
     corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
@@ -1312,7 +1312,7 @@ def render_level_row_unordered():
 
     st.pyplot(plt.gcf())
 
-@st.cache_data
+#@st.cache_data
 def render_level_col_ordered():
 
     corr_matrix = num_video_df.drop(['Proportion of determiners', 'Proportion of nouns', 'Proportion of wago', 'Proportion of gairaigo'], axis=1).corr()
