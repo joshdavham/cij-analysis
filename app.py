@@ -1343,6 +1343,9 @@ word_origin_table = get_word_origin_table()
 selection = alt.selection_point(fields=['level'], bind='legend', on='click')
 highlight = alt.selection_point(name="highlight", fields=['level'], on='mouseover', empty=False)
 
+###
+# INTRO
+###
 st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
 
 st.markdown("[Code can be found [here](https://github.com/joshdavham/cij-analysis)]")
@@ -1354,8 +1357,6 @@ st.markdown("**Comprehensible input** (or CI, for short) is a language teaching 
             It is believed by many that CI is one of the most optimal and natural \
              ways to acquire a foreign language \
             ...but, what exactly is about CI that makes it comprehensible?")
-
-
 
 st.markdown("To answer this question, I'll be analyzing the videos on \
             [cijapanese.com](https://cijapanese.com/) (CIJ), a \
@@ -1371,11 +1372,8 @@ st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
             for advanced learners.")
 
 if st.checkbox('Show medians'):
-
     layered_chart = get_wpm_chart(show_medians=True)
-
 else:
-    
     layered_chart = get_wpm_chart(show_medians=False)
 
 st.altair_chart(layered_chart, use_container_width=True)
@@ -1438,13 +1436,9 @@ st.markdown("## Sentence length")
 
 st.markdown("Videos meant for beginners tend to have shorter sentences on average.")
 
-
 if st.checkbox('Show medians', key='sentence_length'):
-
     sentence_length_hist = get_sentence_length_hist(show_medians=True)
-
 else:
-    
     sentence_length_hist = get_sentence_length_hist(show_medians=False)
 
 st.altair_chart(sentence_length_hist, use_container_width=True)
@@ -1460,15 +1454,11 @@ st.markdown("## Amount of repetition")
 st.markdown("Words are repeated more often in easier videos.")
 
 if st.checkbox('Show medians', key='repetition'):
-
     repetition_hist = get_repetition_hist(show_medians=True)
-
 else:
-    
     repetition_hist = get_repetition_hist(show_medians=False)
 
 st.altair_chart(repetition_hist, use_container_width=True)
-
 
 st.markdown("If you don't catch a word the first time it's said, there's more opportunities \
             in the easier videos to hear that word again.")
@@ -1490,11 +1480,8 @@ st.markdown("If we take all the words in CIJ, count them then order them from mo
             Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in that category.")
 
 if st.checkbox('Zoom in'):
-
     word_coverage_chart = get_word_coverage_chart(zoom=True)
-
 else:
-
     word_coverage_chart = get_word_coverage_chart(zoom=False)
 
 st.altair_chart(word_coverage_chart, use_container_width=True)
@@ -1504,9 +1491,7 @@ st.markdown("Using the same method of calculating word coverage as before, \
             to achieve 98% word coverage in each video.")
 
 if st.checkbox('Show medians', key='ne_spot'):
-
     ne_spot_hist = get_ne_spot_hist(show_medians=True)
-
 else:
     
     ne_spot_hist = get_ne_spot_hist(show_medians=False)
@@ -1523,11 +1508,8 @@ st.markdown("## Word rareness")
 st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
 
 if st.checkbox('Show medians', key='tfplr'):
-
     tfplr_hist = get_tfplr_hist(show_medians=True)
-
 else:
-    
     tfplr_hist = get_tfplr_hist(show_medians=False)
 
 st.altair_chart(tfplr_hist, use_container_width=True)
@@ -1554,11 +1536,8 @@ st.markdown("## Grammar")
 st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/u/pos/SCONJ.html) than harder videos.")
 
 if st.checkbox('Show medians', key='sconj'):
-
     sconj_hist = get_sconj_hist(show_medians=True)
-
 else:
-    
     sconj_hist = get_sconj_hist(show_medians=False)
 
 st.altair_chart(sconj_hist, use_container_width=True)
@@ -1580,13 +1559,9 @@ st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaig
 
 st.markdown("Harder videos tend to use more Kango than easier videos")
 
-
 if st.checkbox('Show medians', key='kango'):
-
     kango_hist = get_kango_hist(show_medians=True)
-
 else:
-    
     kango_hist = get_kango_hist(show_medians=False)
 
 st.altair_chart(kango_hist, use_container_width=True)
@@ -1611,7 +1586,6 @@ st.markdown("We've just found a number of statistics that lead to orderings in t
 st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
             and observe which statistics correlate the most strongly with the video's level.")
 
-
 render_vanilla_heatmap()
 
 st.markdown("In case you're not familiar with stuff like this, numbers close to 1 or -1 \
@@ -1621,9 +1595,6 @@ st.markdown("In case you're not familiar with stuff like this, numbers close to 
 
 st.markdown("Using a statistics rule of thumb and removing all variables that have correlations \
             weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
-
-
-
 
 if st.checkbox('Flip and sort'):
     render_level_col_ordered()
