@@ -19,6 +19,18 @@ st.set_page_config(
 #</style>
 #""", unsafe_allow_html=True)
 
+@st.cache_data
+def load_dataframes():
+
+    video_df = pd.read_csv("video_data.tsv", sep="\t")
+    word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
+    num_video_df = pd.read_csv('num_video_df.tsv', sep='\t')
+
+    return video_df, word_coverage_df, num_video_df
+
+video_df, word_coverage_df, num_video_df = load_dataframes()
+
+
 st.markdown("Note: this analysis is meant to viewed on a computer and not a phone (sorry!)")
 
 st.markdown("[Code can be found [here](https://github.com/joshdavham/cij-analysis)]")
@@ -36,8 +48,6 @@ st.markdown("**Comprehensible input** (or CI, for short) is a language teaching 
 st.markdown("To answer this question, I'll be analyzing the videos on \
             [cijapanese.com](https://cijapanese.com/) (CIJ), a \
             video platform for learning Japanese.")
-
-video_df = pd.read_csv("video_data.tsv", sep="\t")
 
 # Plot the WPM histogram
 
@@ -750,8 +760,6 @@ st.markdown("If we take all the words in CIJ, count them then order them from mo
 
 @st.cache_data
 def get_word_coverage_chart(zoom=False):
-
-    word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
 
     if zoom:
         word_coverage_df_sub = word_coverage_df.loc[word_coverage_df['coverage_perc']>=90]
@@ -1728,8 +1736,6 @@ st.markdown("We've just found a number of statistics that lead to orderings in t
 
 st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
             and observe which statistics correlate the most strongly with the video's level.")
-
-num_video_df = pd.read_csv('num_video_df.tsv', sep='\t')
 
 @st.cache_data
 def render_vanilla_heatmap():
