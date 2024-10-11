@@ -49,6 +49,7 @@ st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
 
 #st.markdown("### Rate of speech in words per minute (WPM)")
 
+@st.cache_data
 def get_wpm_chart(show_medians=False):
 
     # Data for vertical lines corresponding to each level
@@ -220,6 +221,7 @@ st.markdown("To put this data into perspective, native Japanese speakers \
 
 # wpm vs sps chart
 
+@st.cache_data
 def get_wpm_vs_sps_chart(interactive=False):
 
     selection = alt.selection_point(fields=['level'], bind='legend', on='click')
@@ -366,6 +368,7 @@ st.markdown("## Sentence length")
 
 st.markdown("Videos meant for beginners tend to have shorter sentences on average.")
 
+@st.cache_data
 def get_sentence_length_hist(show_medians=False):
 
     # Data for vertical lines corresponding to each level
@@ -542,6 +545,7 @@ st.markdown("## Amount of repetition")
 
 st.markdown("Words are repeated more often in easier videos.")
 
+@st.cache_data
 def get_repetition_hist(show_medians=False):
 
     video_df['average_rel_reps_perc'] = 100.0 * video_df['average_rel_reps']
@@ -744,6 +748,7 @@ st.markdown("If we take all the words in CIJ, count them then order them from mo
 
 # word coverage chart
 
+@st.cache_data
 def get_word_coverage_chart():
 
     word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
@@ -892,7 +897,7 @@ def get_word_coverage_chart():
 
     return layered_chart
 
-
+@st.cache_data
 def get_zoomed_word_coverage_chart():
 
     word_coverage_df = pd.read_csv('word_coverage_df_plot.tsv', sep='\t')
@@ -1059,6 +1064,7 @@ st.markdown("Using the same method of calculating word coverage as before, \
             we can also calculate how many of the top words you need to know \
             to achieve 98% word coverage in each video.")
 
+@st.cache_data
 def get_ne_spot_hist(show_medians=False):
 
     # Data for vertical lines corresponding to each level
@@ -1233,6 +1239,7 @@ st.markdown("## Word rareness")
 
 st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
 
+@st.cache_data
 def get_tfplr_hist(show_medians=False):
 
     # Data for vertical lines corresponding to each level
@@ -1421,6 +1428,7 @@ st.markdown("## Grammar")
 
 st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/u/pos/SCONJ.html) than harder videos.")
 
+@st.cache_data
 def get_sconj_hist(show_medians=False):
 
     video_df['sconj_props_perc'] = 100.0 * video_df['sconj_props']
@@ -1653,6 +1661,7 @@ st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaig
 
 st.markdown("Harder videos tend to use more Kango than easier videos")
 
+@st.cache_data
 def get_kango_hist(show_medians=False):
 
     video_df['kan_props_perc'] = 100.0 * video_df['kan_props']
@@ -1875,6 +1884,7 @@ st.markdown("To answer this, we can look at a correlation heatmap between each o
 
 num_video_df = pd.read_csv('num_video_df.tsv', sep='\t')
 
+@st.cache_data
 def render_vanilla_heatmap():
 
     # Compute the correlation matrix
@@ -1908,7 +1918,7 @@ st.markdown("Using a statistics rule of thumb and removing all variables that ha
             weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
 
 
-
+@st.cache_data
 def render_level_row_unordered():
 
     # Compute the correlation matrix
@@ -1934,6 +1944,7 @@ def render_level_row_unordered():
     #plt.show()
     st.pyplot(plt.gcf())
 
+@st.cache_data
 def render_level_col_ordered():
 
     # Compute the correlation matrix
