@@ -14,4 +14,4 @@ Run the app
 streamlit run app.py
 ```
 
-Note: This app can also be run as a Docker container. See [DOCKERFILE](DOCKERFILE).
+Note: This app can also be run as a Docker container. See [Dockerfile](Dockerfile).
