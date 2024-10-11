@@ -15,3 +15,8 @@ streamlit run app.py
 ```
 
 Note: This app can also be run as a Docker container. See [Dockerfile](Dockerfile).
+
+## Data
+
+Only derived statistics are included in this repository. If you would like access to the original raw transcripts, please consider purchasing a membership
+with [cijapanese.com](https://cijapanese.com/). 
