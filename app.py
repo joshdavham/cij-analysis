@@ -1351,15 +1351,13 @@ st.markdown("[Code and data can be found [here](https://github.com/joshdavham/ci
 
 st.markdown("# What makes comprehensible input *comprehensible*?")
 
-st.markdown("**Comprehensible input** (or CI, for short) is a language teaching technique where teachers \
-            speak in a way that is understandable to their students. \
-            It is believed by many that CI is one of the most optimal and natural \
-             ways to acquire a foreign language \
-            ...but, what exactly is about CI that makes it comprehensible?")
+st.markdown("**Comprehensible input** (or CI, for short) is a language teaching method where teachers provide their students with lots of language “input” that has been adapted to a level that they can understand. It is believed by many that CI is one of the most natural and effective ways to acquire a foreign language.")
 
-st.markdown("To answer this question, I'll be analyzing the videos on \
+st.markdown("…but what exactly is it about CI that makes it so *comprehensible*?")
+
+st.markdown("To answer this question, we'll be analyzing the videos on \
             [cijapanese.com](https://cijapanese.com/) (CIJ), a \
-            video platform for learning Japanese.")
+            CI platform for learning Japanese.")
 
 ###
 # RATE OF SPEECH
@@ -1368,7 +1366,7 @@ st.markdown("## How fast is CI?")
 
 st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
             they speak more slowly in videos meant for beginners and more quickly \
-            for advanced learners.")
+            in videos meant for more advanced learners.")
 
 st.markdown("**(THESE GRAPHS ARE CLICKABLE)**")
 
@@ -1379,10 +1377,13 @@ else:
 
 st.altair_chart(layered_chart, use_container_width=True)
 
-st.markdown("To put this data into perspective, native Japanese speakers \
+st.markdown("To put the above data into perspective, native Japanese speakers \
             can speak at rates of over 200 wpm, meaning that most of the videos \
             on CIJ have been adapted to be a lot slower than that!")
     
+st.markdown("We can also measure the rate of speech in syllables per second (SPS) \
+            and compare it to words per minute.")
+
 if st.checkbox('Enable zooming and panning ( ↕ / ↔️ )'):
     wpm_vs_sps_chart = get_wpm_vs_sps_chart(interactive=True)
 else:
@@ -1390,22 +1391,19 @@ else:
 
 st.altair_chart(wpm_vs_sps_chart, use_container_width=True)
 
-st.markdown("We can also measure the rate of speech in syllables per second (SPS) \
-            and compare it to words per minute.")
-
 ###
 # STATISTICS LESSON
 ###
 st.markdown("## A quick statistics lesson")
 
-st.markdown("Before we continue this analysis, there's some basic things you should know.")
+st.markdown("Before we continue the analysis, there's some basic things you should know.")
 
 st.markdown("### The data")
 
 st.markdown("The dataset we'll be analyzing comprises of just under 1,000 videos. \
             In particular, we'll be analyzing the subtitles of the videos.")
 
-st.markdown('Every video has a Level: **Complete Beginner**, **Beginner**, \
+st.markdown('Also, every video has a level: **Complete Beginner**, **Beginner**, \
             **Intermediate**, or **Advanced**.')
 
 st.markdown("### The statistics")
@@ -1414,7 +1412,7 @@ st.markdown("The goal of this analysis is to find features in the video data tha
             to a specific pattern called an \"ordering\".")
 
 st.markdown("We're specifically looking for *any* statistic that can lead to an \
-            ordering of the levels in one of the two following orders:")
+            ordering of the levels in either of the two following directions:")
 
 st.markdown("> Complete Beginner < Beginner < Intermediate < Advanced")
 st.markdown("or")
@@ -1423,7 +1421,7 @@ st.markdown("> Complete Beginner > Beginner > Intermediate > Advanced")
 st.markdown("For example: if a statistic is small for Complete Beginnner videos, but gets bigger \
             for Beginner, Intermediate, then Advanced videos, it suggests \
             that this is a good statistic for determining what makes a video comprehensible. \
-            In fact, we already saw this above when measuring the **words per minute** statistic.")
+            In fact, we already saw this above when measuring the [words per minute statistic](#how-fast-is-ci).")
 
 st.markdown("Okay! Now we can continue.")
 
@@ -1441,8 +1439,8 @@ else:
 
 st.altair_chart(sentence_length_hist, use_container_width=True)
 
-st.markdown("This makes sense because long sentences generally tend to be more complex and packed with information \
-            whereas short sentences are usually easier to understand.")
+st.markdown("This makes sense because long sentences can be more complex and packed with information \
+            whereas short sentences are usually simpler.")
 
 ###
 # AMOUNT OF REPETITION
@@ -1459,7 +1457,7 @@ else:
 st.altair_chart(repetition_hist, use_container_width=True)
 
 st.markdown("If you don't catch a word the first time it's said, there's more opportunities \
-            in the easier videos to hear that word again.")
+            in the easier videos to hear that word repeated again.")
 
 ###
 # HOW MANY WORDS
@@ -1467,15 +1465,15 @@ st.markdown("If you don't catch a word the first time it's said, there's more op
 st.markdown("## How many words you need to know")
 
 st.markdown("A popular statistic in language learning circles is that you generally \
-            need to know around 98% of words in a given piece of content to understand it well. \
-            This statistic is known as 'word coverage', the percentage of words you know in a given text.")
+            need to know around 98% of the words in a given piece of content in order to be able to understand it well. \
+            This statistic is known as 'word coverage' - the percentage of words you know in a given text.")
 
-st.markdown("How many words do you need to know to understand 98% of the words in each level?")
+st.markdown("How many words do you need to know in order to understand 98% of the words in each level?")
 
-st.markdown("If we take all the words in CIJ, count them then order them from most common, to least common, \
+st.markdown("If we take all of the words in CIJ, count them and then order them from most common to least common, \
              we can calculate the word coverage you get at different vocabulary sizes. \
             For example, if we learn the top 500 words from CIJ, then we'll know around 80% of the words in the \
-            Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in that category.")
+            Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in the Complete Beginner videos.")
 
 if st.checkbox('Zoom in'):
     word_coverage_chart = get_word_coverage_chart(zoom=True)
@@ -1484,9 +1482,9 @@ else:
 
 st.altair_chart(word_coverage_chart, use_container_width=True)
 
-st.markdown("Using the same method of calculating word coverage as before, \
-            we can also calculate how many of the top words you need to know \
-            to achieve 98% word coverage in each video.")
+st.markdown("Using this same method of calculating word coverage, \
+            we can also calculate how many of the top words from CIJ you need to know \
+            in order to achieve 98% word coverage in each video.")
 
 if st.checkbox('Show medians', value=True, key='ne_spot'):
     ne_spot_hist = get_ne_spot_hist(show_medians=True)
@@ -1503,7 +1501,7 @@ st.markdown("In general, easier videos require smaller vocabulary sizes to under
 ###
 st.markdown("## Word rareness")
 
-st.markdown("More advanced videos tend to use rare/uncommon words more often than easier videos.")
+st.markdown("Harder videos use rarer words.")
 
 if st.checkbox('Show medians', value=True, key='tfplr'):
     # tfplr stands for "twenty fifth percentile log rank"
@@ -1515,24 +1513,23 @@ st.altair_chart(tfplr_hist, use_container_width=True)
 
 st.markdown("How common a word is, is known as its 'rank'. The most common word \
             in a text would be rank 1 and the fifth most common would be rank 5. \
-            A word with a low rank is a commonly used word (e.g., 'it', 'walk', 'up') whereas a word with a high rank \
-            is an uncommon or 'rare' word (e.g., 'esoteric', 'gauche', 'gallant').")
+            A word with a low rank is a commonly used word (e.g., 'and', 'work', 'that') whereas a word with a high rank \
+            is an uncommon or 'rare' word (e.g., 'esoteric', 'gauche', 'opprobrium'). Furthermore, \
+            a list of word ranks is known as a 'frequency list'.")
 
-st.markdown("The words in the videos were compared to the ranks of words generated from a frequency list made from over 4,000 Japanese Netflix \
-            TV episodes and movies. Duplicate ranks in the videos were removed, scaled with a log \
-            function then used to compute the 25th percentile. This was necessary due \
-            to power-law nature of word frequency distributions.")
+st.markdown("The ranks of the words in the videos were compared with a larger, independent frequency list and then scaled with a log function \
+            before computing the twenty fifth percentile. This was done to make for a better visualization.")
 
-st.markdown("(It's okay ff the above didn't quite make sense to you - just know that the above graph \
-            demonstrates that easier videos tend to use more common words whereas \
-            advanced videos tend to use more rare words!)")
+st.markdown("Note: it's okay if the above values don't quite make sense to you - just know that the above graph \
+            demonstrates that easier videos tend to use common words more often whereas \
+            advanced videos tend to use more rare words more often.")
 
 ###
 # GRAMMAR
 ###
 st.markdown("## Grammar")
 
-st.markdown("Easier videos tend to use less [subordinating conjunctions](https://universaldependencies.org/ja/pos/SCONJ.html) than harder videos.")
+st.markdown("Easier videos use less [subordinating conjunctions](https://universaldependencies.org/ja/pos/SCONJ.html) than harder videos.")
 
 if st.checkbox('Show medians', value=True, key='sconj'):
     sconj_hist = get_sconj_hist(show_medians=True)
@@ -1550,13 +1547,13 @@ st.markdown(
 ###
 # WORD ORIGIN
 ###
-st.markdown("## What type of word")
+st.markdown("## Word origin")
 
 st.markdown("There are three main categories of words in Japanese:")
 st.markdown("(1) Wago (和語), (2) Kango (漢語) and (3) Gairaigo (外来語)")
 st.markdown("Wago are native Japanese words, Kango are Chinese words and Gairaigo are foreign words.")
 
-st.markdown("Harder videos tend to use more Kango than easier videos")
+st.markdown("Harder videos use more kango than easier videos")
 
 if st.checkbox('Show medians', value=True, key='kango'):
     kango_hist = get_kango_hist(show_medians=True)
@@ -1565,7 +1562,7 @@ else:
 
 st.altair_chart(kango_hist, use_container_width=True)
 
-st.markdown("In Japanese, Kango are somewhat analogous to French words in English. \
+st.markdown("In Japanese, kango are somewhat analogous to French words in English. \
             These words tend to be more technical or sophisticated than other words.")
 
 st.markdown("We also notice orderings when counting the percentage of Wago and Gairaigo as well.")
@@ -1579,20 +1576,21 @@ st.markdown(
 ###
 st.markdown("## Which factors matter the most?")
 
-st.markdown("We've just found a number of statistics that lead to orderings in the data \
+st.markdown("We've just found a number of statistics that lead to orderings in the data, \
             but which statistics matter the most?")
 
 st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
-            and observe which statistics correlate the most strongly with the video's level.")
+            and observe which statistics correlate the most strongly with the video's level. \
+            In particular, we'll want to look at the first row (or first column).")
 
 render_vanilla_heatmap()
 
 st.markdown("In case you're not familiar with stuff like this, numbers close to 1 or -1 \
-            represent a high level or correlation and numbers close to 0 represent a low level of correlation. \
+            represent a high level or correlation while numbers close to 0 represent a low level of correlation. \
             Positive numbers represent a positive relationship between the variables and negative numbers represent a \
             reverse relationship between the variables.")
 
-st.markdown("Using a statistics rule of thumb and removing all variables that have correlations \
+st.markdown("If we use a statistics rule of thumb and remove all the variables that have correlations \
             weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
 
 if st.checkbox('Flip and sort by correlation strength'):
@@ -1601,12 +1599,12 @@ else:
     render_level_row_unordered()
 
 
-st.markdown("To summarize (and simplify), this suggests that the most important factors in comprehensibility are:")
+st.markdown("To summarize (and simplify), the factors with the strongest correlations with the Level are:")
 
 st.markdown("1. Rate of Speech")
 st.markdown("2. Sentence length")
 st.markdown("3. Amount of repetition of words")
-st.markdown("4. How common/rare the words are")
+st.markdown("4. How rare the words are")
 st.markdown("5. Amount of subordinating conjunctions")
 st.markdown("6. Vocabulary size")
 st.markdown("7. Amount of pronouns")
@@ -1614,23 +1612,40 @@ st.markdown("8. Amount of adverbs")
 st.markdown("9. Amount of auxiliaries")
 st.markdown("10. Amount of Chinese words")
 
-st.markdown("## Dicussion")
+st.markdown("In other words, as the videos get harder, the speech gets faster, the sentences get longer, words are repeated *less* \
+            and so on and so forth!")
+
+st.markdown("## Dicussion / Conclusion")
+
+st.markdown("I find comprehensible input absolutely fascinating. The fact that\
+            at any stage of the language acquisition process, the language can\
+            be made into a form that anyone can understand, even without formal instruction.")
+
+st.markdown("In the above analysis, we saw that there exist a number of patterns that help \
+            explain what CI is made of and the various factors that change \
+            when CI is targeted at new vs. experienced learners.")
+
+st.markdown("The findings in this analysis are not meant to be conclusive or to tell CI educators\
+            how to teach their students, but rather just to get us thinking more analytically about the factors\
+            that help or hurt comprehensibility. Most of us know intuitively that slow speech is easier to understand than fast\
+            speech, but how many of us think about the importance of repetition when trying to make ourselves understood? \
+            I think it's interesting and important to think about these things as both language learners and educators.")
 
 #st.markdown('')
 
-st.markdown("### Thanks for reading ✌️")
+st.markdown("## Thanks for reading ✌️")
 
 st.markdown("---")
 
 st.markdown("#### Futher discussion for hardcore nerds")
 
 st.markdown("- No tests of statistical significance were conducted. This was purely meant as an EDA. \
-            However, you can get the data from the repo linked at the top and conduct them yourself if you'd like. \
+            However, you can get the data from the repo linked at the top and conduct tests yourself if you'd like. \
             I'd recommend starting with non-parametric tests like Kruskal-Wallis and moving on to pairwise tests \
-            with a bonferonni correction if it's significant. Parametric tests may also be interesting.")
+            with a bonferonni correction if there's a significant result. Parametric tests may also be interesting.")
 
 st.markdown("- Technically, I computed 'moras per second' - not syllables per second. I'm aware that this \
-            is technically linguistically incorrect, but it still serves as close approximation and is easier \
+            is technically linguistically incorrect, but it still serves as a close approximation and is easier \
             to understand for readers unfamiliar with Japanese linguistics.")
 
 st.markdown("- The Mecab and Sudachi parsers (through Fugashi and Spacy) were used to analyze the transcripts. These parsers are not always 100% accurate.")
@@ -1640,8 +1655,15 @@ st.markdown("- When computing the statistics for repetition, word coverage and w
 st.markdown("- Of the parsed words, while I did remove punctuation, I didn't otherwise verify that each token was an actual word. \
             There is likely some amount of noise in the data such as mis-parses, etc.")
 
+st.markdown("- I am slightly abusing the 98% statistic in this analysis. The original research applies \
+            mainly to written text whereas the content on CIJ is mainly meant to listened to rather than read.")
+
 st.markdown("- If you're like me, the word coverage plots also probably evoked a resemblance to Heap's Law. \
             More research would need to be done, but I suspect one may be able to find a link between word coverage and Heap's Law.")
+
+st.markdown("- The frequency list used to calculate the word ranks was created from over 4,000 Japanese TV episodes and movies on Netflix. \
+            Furthemore, the 25th percentile was computed on the ranks of unique words in each video's subtitles. Getting a decent visualization for \
+            something like this is actually a bit tricky due to the highly exponential nature of word-frequency distributions which are power laws.")
 
 st.markdown("- One should bare in mind that the learner levels were labelled by a small group of experts and not a large number of learners. \
             In other words, the difficulty levels are not objective, but rather an approximation of difficulty / natural acquistion order.")
@@ -1653,7 +1675,7 @@ st.markdown("1. **Audibility** - My hypothesis was that the teachers would speak
             and the original transcript to katakana and compared the character error rate. I found no differences in the levels. \
             Furthermore I can't tell if this moreso invalidates my original hypothesis or if whisper is just that good.")
 
-st.markdown("2. **Word length** - At least in English and French (the languages I know the best), longer words are generally considered harder. \
+st.markdown("2. **Word length** - At least in English and French (the languages I know best), longer words are generally considered harder. \
             My hypothesis was that the easier videos would use shorter words while the harder videos would use bigger words. \
             To test this, I parsed the transcripts and converted all words to katakana \
             to get a measure of how long the words were orally. I found no differences between the levels.")
@@ -1664,3 +1686,8 @@ st.markdown("3. **Range of vocabulary** - I suspected that easier videos may lim
 st.markdown("4. **Other parts of speech** - I did test for orderings between the levels for other parts of speech such as: \
             proportion of adjectives, adpositions, coordinating conjunctions, interjections, particles and proper nouns \
             but ultimately didn't find any obvious orderings.")
+
+st.markdown("5. **Other word frequency metrics** - You can probably guess from reading '25th percentile log rank', that this was not the first statistic I tried.\
+            I also tried computing the un-logged ranks, the mean, median, 75th percentile and non-unique (repeated) word ranks from the videos, and while some of these led to\
+            orderings, they were generally not very nice to visualize. I'm certain that there's got to be a nicer statistic for representing how rare the overall vocabulary in a text is. \
+            But Zipf's law makes this a challenge.")
