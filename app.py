@@ -1351,9 +1351,9 @@ st.markdown("[Code and data can be found [here](https://github.com/joshdavham/ci
 
 st.markdown("# What makes comprehensible input *comprehensible*?")
 
-st.markdown("**Comprehensible input** (or CI, for short) is a language teaching method where teachers provide their students with lots of language “input” that has been adapted to a level that they can understand. It is believed by many that CI is one of the most natural and effective ways to acquire a foreign language.")
+st.markdown("**Comprehensible input** (or CI, for short) is a language learning method where teachers provide their students with lots of language “input” that has been adapted to a level that they can understand. It is believed by many that CI is one of the most natural and effective ways to acquire a foreign language.")
 
-st.markdown("…but what exactly is it about CI that makes it so *comprehensible*?")
+st.markdown("…but what exactly is it about comprehensible input that makes it so *comprehensible*?")
 
 st.markdown("To answer this question, we'll be analyzing the videos on \
             [cijapanese.com](https://cijapanese.com/) (CIJ), a \
@@ -1366,7 +1366,7 @@ st.markdown("## How fast is CI?")
 
 st.markdown("If we measure how fast the teachers speak on CIJ, we find that \
             they speak more slowly in videos meant for beginners and more quickly \
-            in videos meant for more advanced learners.")
+            in videos meant for advanced learners.")
 
 st.markdown("**(THESE GRAPHS ARE CLICKABLE)**")
 
@@ -1470,7 +1470,7 @@ st.markdown("A popular statistic in language learning circles is that you genera
 
 st.markdown("How many words do you need to know in order to understand 98% of the words in each level?")
 
-st.markdown("If we take all of the words in CIJ, count them and then order them from most common to least common, \
+st.markdown("If we take all of the words from each of the CIJ videos, count them and then order them from most common to least common, \
              we can calculate the word coverage you get at different vocabulary sizes. \
             For example, if we learn the top 500 words from CIJ, then we'll know around 80% of the words in the \
             Complete Beginner videos. And if we learn the top 4,295 words, then we'll know 98% of the words in the Complete Beginner videos.")
@@ -1520,9 +1520,9 @@ st.markdown("How common a word is, is known as its 'rank'. The most common word 
 st.markdown("The ranks of the words in the videos were compared with a larger, independent frequency list and then scaled with a log function \
             before computing the twenty fifth percentile. This was done to make for a better visualization.")
 
-st.markdown("Note: it's okay if the above values don't quite make sense to you - just know that the above graph \
+st.markdown("Note: it's okay if the above values don't quite make sense to you - just know that the graph \
             demonstrates that easier videos tend to use common words more often whereas \
-            advanced videos tend to use more rare words more often.")
+            advanced videos tend to use rarer words more often.")
 
 ###
 # GRAMMAR
@@ -1581,7 +1581,9 @@ st.markdown("We've just found a number of statistics that lead to orderings in t
 
 st.markdown("To answer this, we can look at a correlation heatmap between each of the variables \
             and observe which statistics correlate the most strongly with the video's level. \
-            In particular, we'll want to look at the first row (or first column).")
+            In particular, we'll want to look at the first row (or first column) of the heatmap.")
+
+st.markdown("**(If the plots below don't load, try refreshing the page.)**")
 
 render_vanilla_heatmap()
 
@@ -1590,7 +1592,7 @@ st.markdown("In case you're not familiar with stuff like this, numbers close to 
             Positive numbers represent a positive relationship between the variables and negative numbers represent a \
             reverse relationship between the variables.")
 
-st.markdown("If we use a statistics rule of thumb and remove all the variables that have correlations \
+st.markdown("If we use a statistics rule of thumb and remove all of the variables that have correlations \
             weaker than 0.3 (and more than -0.3), we can identify the variables with the strongest correlations.")
 
 if st.checkbox('Flip and sort by correlation strength'):
@@ -1599,7 +1601,7 @@ else:
     render_level_row_unordered()
 
 
-st.markdown("To summarize (and simplify), the factors with the strongest correlations with the Level are:")
+st.markdown("To summarize (and simplify), the factors that correlate the most with the difficulty level are:")
 
 st.markdown("1. Rate of Speech")
 st.markdown("2. Sentence length")
@@ -1631,18 +1633,28 @@ st.markdown("The findings in this analysis are not meant to be conclusive or to 
             speech, but how many of us think about the importance of repetition when trying to make ourselves understood? \
             I think it's interesting and important to think about these things as both language learners and educators.")
 
-#st.markdown('')
-
 st.markdown("## Thanks for reading ✌️")
+
+st.markdown("Thanks also to Ben, Russ Simmons and Yuki Kimura for looking at early drafts of this analysis.")
+
+st.markdown("If you're a Japanese learner and you're interested in learning Japanese the natural way, then I'd highly recommend getting a membership \
+            at [cijapanese.com](https://cijapanese.com). You'll get access to nearly 1,000 videos with new videos being added each week!")
 
 st.markdown("---")
 
-st.markdown("#### Futher discussion for hardcore nerds")
+st.markdown("#### Further discussion for hardcore nerds")
 
 st.markdown("- No tests of statistical significance were conducted. This was purely meant as an EDA. \
             However, you can get the data from the repo linked at the top and conduct tests yourself if you'd like. \
             I'd recommend starting with non-parametric tests like Kruskal-Wallis and moving on to pairwise tests \
             with a bonferonni correction if there's a significant result. Parametric tests may also be interesting.")
+
+st.markdown("- For those interested in modelling difficulty/proficiency level, I'd recommend checking out the [jreadability python package](https://github.com/joshdavham/jreadability) \
+            then following the links. The model is very simple but should serve as a useful starting point for those interested in building their own models.")
+
+st.markdown("- While CIJ classifies their videos into discrete proficiency levels, it should be noted that language proficiency \
+            is likely better modelled as a continuous variable. Evidence of this is partly observed by the amount of statistical overlap between \
+            the videos of the various level groups.")
 
 st.markdown("- Technically, I computed 'moras per second' - not syllables per second. I'm aware that this \
             is technically linguistically incorrect, but it still serves as a close approximation and is easier \
