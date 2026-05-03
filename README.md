@@ -1,3 +1,14 @@
+---
+title: Comprehensible Input Analysis
+emoji: 🌸
+sdk: docker
+app_port: 8501
+tags:
+- streamlit
+pinned: true
+short_description: Data analysis of cijapanese.com
+---
+
 # cij-analysis
 
 A data analysis of [cijapanese.com](https://cijapanese.com/), built with streamlit. View the analysis [here](https://cij-analysis.streamlit.app/).
